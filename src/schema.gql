@@ -1,0 +1,100 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""An exception that is raised during authentication"""
+type AuthenticationException {
+  """A message describing why the exception occured"""
+  message: String!
+}
+
+union AuthenticationResult = AuthenticationException | Session
+
+type Certificate {
+  """The date the certificate has been created"""
+  created_at: DateTime!
+
+  """The certificate id"""
+  id: ID!
+
+  """Has the certificate been revoked?"""
+  is_revoked: Boolean!
+
+  """A name given in order to be able to differentiate the certificates"""
+  name: String!
+
+  """The date the certificate has last been updated"""
+  updated_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  """Logs a user in and returns a new valid session id"""
+  authenticate(password: String!, username: String!): AuthenticationResult!
+
+  """Generates a new certificate"""
+  generateCertificate(name: String!): Certificate!
+
+  """Logs a user out, deletes the session id"""
+  logout: Boolean!
+
+  """Revokes an existing certificate of the logged in user"""
+  revokeCertificate(id: ID!): RevokeCertificateReponse!
+
+  """Updates the current user using the provided data"""
+  updateMe(email: String!, firstname: String!, lastname: String!): User!
+
+  """Updates the current user's password"""
+  updatePassword(newPassword: String!, oldPassword: String!): UpdatePasswordResult!
+}
+
+"""An exception that is raised during authentication"""
+type NotFoundException {
+  """A message describing why the exception occured"""
+  message: String!
+}
+
+type Query {
+  """Retrieves the current user"""
+  me: User!
+}
+
+union RevokeCertificateReponse = NotFoundException | RevokeCertificateSuccess
+
+type RevokeCertificateSuccess {
+  success: Boolean!
+}
+
+type Session {
+  """The session id"""
+  session_id: ID!
+}
+
+union UpdatePasswordResult = User | WrongPasswordException
+
+"""
+The user type contains all information about the user, including the data from the legacy database
+"""
+type User {
+  certificates: [Certificate!]!
+
+  """The user's email from the legacy database"""
+  email: String!
+
+  """The user's firstname from the legacy database"""
+  firstname: String!
+
+  """The user's lastname from the legacy database"""
+  lastname: String!
+  username: String!
+}
+
+"""An exception that is raised during authentication"""
+type WrongPasswordException {
+  """A message describing why the exception occured"""
+  message: String!
+}

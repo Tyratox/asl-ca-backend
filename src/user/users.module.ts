@@ -1,0 +1,20 @@
+import { forwardRef, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LegacyUserService } from './legacy-user.service';
+import { LegacyUserEntity } from './legacy-user.entity';
+import { UsersResolver } from './users.resolver';
+import { AuthenticationService } from './authentication/authentication.service';
+import { SessionEntity } from './session.entity';
+import { CertificateModule } from 'src/certificate/certificate.module';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([LegacyUserEntity]),
+    TypeOrmModule.forFeature([SessionEntity]),
+    forwardRef(() => CertificateModule),
+  ],
+  exports: [TypeOrmModule, AuthenticationService],
+  providers: [LegacyUserService, AuthenticationService, UsersResolver],
+  controllers: [],
+})
+export class UsersModule {}
