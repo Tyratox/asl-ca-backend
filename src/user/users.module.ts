@@ -7,6 +7,7 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { SessionEntity } from './session.entity';
 import { CertificateModule } from 'src/certificate/certificate.module';
 import { AuthenticationController } from './authentication/authentication.controller';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthenticationController } from './authentication/authentication.contro
     AuthenticationService,
     UsersResolver,
     AuthenticationController,
+    ConfigService,
   ],
   controllers: [],
 })

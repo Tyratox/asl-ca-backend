@@ -1,4 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { CertificateService } from 'src/certificate/certificate.service';
 import { LegacyUserService } from '../legacy-user.service';
@@ -10,6 +11,7 @@ export class AuthenticationController {
     private authenticationService: AuthenticationService,
     private certificateService: CertificateService,
     private userService: LegacyUserService,
+    private configService: ConfigService,
   ) {}
   @Get('tls-cert')
   async tlsCert(
@@ -41,10 +43,12 @@ export class AuthenticationController {
       user,
     );
 
+    const REDIRECT_URL = this.configService.get(
+      'CLIENT_CERT_AUTH_REDIRECT_URL',
+    );
+
     if (session) {
-      response.redirect(
-        `http://localhost:8080/login?token=${session.session_id}`,
-      );
+      response.redirect(`${REDIRECT_URL}?token=${session.session_id}`);
       return '';
     } else {
       return "Error: Couldn't generate a session! Please report this!";
