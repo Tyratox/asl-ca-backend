@@ -41,22 +41,6 @@ export class CertificateResolver {
 
   /* Fields */
 
-  @ResolveField('certificateFile', (returns) => String, {
-    description: 'The corresponding certificate file encoded in Base64',
-  })
-  @UseGuards(GqlAuthGuard)
-  async getCertificateFile(
-    @Parent() certificate: CertificateEntity,
-    @CurrentUser() user: LegacyUserEntity,
-  ) {
-    if (this.certificateService.findOneByIdAndUser(certificate.id, user)) {
-      return this.certificateService.getCertificateFile(certificate);
-    } else {
-      //TODO: should we allow everyone to download certificates?
-      return '';
-    }
-  }
-
   /* Queries */
 
   @Query((returns) => String, {
@@ -74,9 +58,14 @@ export class CertificateResolver {
   @UseGuards(GqlAuthGuard)
   async generateCertificate(
     @Args({ name: 'name' }) name: string,
+    @Args({ name: 'password' }) password: string,
     @CurrentUser() user: LegacyUserEntity,
   ) {
-    return this.certificateService.generateCertificateForUser(user, name);
+    return this.certificateService.generateCertificateForUser(
+      user,
+      name,
+      password,
+    );
   }
 
   @Mutation((returns) => RevokeCertificateReponse, {

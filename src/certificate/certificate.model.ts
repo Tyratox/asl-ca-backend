@@ -11,9 +11,6 @@ export class Certificate {
   })
   name: string;
 
-  @Field({ description: 'The actual certificate file, encoded in Base64' })
-  certificateFile: string;
-
   @Field({ description: 'Has the certificate been revoked?' })
   is_revoked: boolean;
 

@@ -8,7 +8,7 @@ export class NewCertificate {
   certificate: CertificateEntity;
 
   @Field({
-    description: 'The prvate key encoded in Base64',
+    description: 'The p12 file encoded in Base64',
   })
-  privateKey: string;
+  p12: string;
 }

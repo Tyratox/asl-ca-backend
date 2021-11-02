@@ -48,7 +48,9 @@ export class AuthenticationController {
     );
 
     if (session) {
-      response.redirect(`${REDIRECT_URL}?token=${session.session_id}`);
+      response.redirect(
+        `${REDIRECT_URL}?token=${encodeURIComponent(session.session_id)}`,
+      );
       return '';
     } else {
       return "Error: Couldn't generate a session! Please report this!";

@@ -11,9 +11,6 @@ type AuthenticationException {
 union AuthenticationResult = AuthenticationException | Session
 
 type Certificate {
-  """The corresponding certificate file encoded in Base64"""
-  certificateFile: String!
-
   """The date the certificate has been created"""
   created_at: DateTime!
 
@@ -40,7 +37,7 @@ type Mutation {
   authenticate(password: String!, username: String!): AuthenticationResult!
 
   """Generates a new certificate"""
-  generateCertificate(name: String!): NewCertificate!
+  generateCertificate(name: String!, password: String!): NewCertificate!
 
   """Logs a user out, deletes the session id"""
   logout: Boolean!
@@ -59,8 +56,8 @@ type NewCertificate {
   """The certificate"""
   certificate: Certificate!
 
-  """The prvate key encoded in Base64"""
-  privateKey: String!
+  """The p12 file encoded in Base64"""
+  p12: String!
 }
 
 """An exception that is raised during authentication"""
