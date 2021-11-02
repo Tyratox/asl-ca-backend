@@ -6,6 +6,7 @@ import { UsersResolver } from './users.resolver';
 import { AuthenticationService } from './authentication/authentication.service';
 import { SessionEntity } from './session.entity';
 import { CertificateModule } from 'src/certificate/certificate.module';
+import { AuthenticationController } from './authentication/authentication.controller';
 
 @Module({
   imports: [
@@ -13,8 +14,13 @@ import { CertificateModule } from 'src/certificate/certificate.module';
     TypeOrmModule.forFeature([SessionEntity]),
     forwardRef(() => CertificateModule),
   ],
-  exports: [TypeOrmModule, AuthenticationService],
-  providers: [LegacyUserService, AuthenticationService, UsersResolver],
+  exports: [TypeOrmModule, AuthenticationService, AuthenticationController],
+  providers: [
+    LegacyUserService,
+    AuthenticationService,
+    UsersResolver,
+    AuthenticationController,
+  ],
   controllers: [],
 })
 export class UsersModule {}

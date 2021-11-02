@@ -6,6 +6,8 @@ import { getConnectionOptions } from 'typeorm';
 import { UsersModule } from './user/users.module';
 import { CertificateModule } from './certificate/certificate.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthenticationController } from './user/authentication/authentication.controller';
+import { LegacyUserService } from './user/legacy-user.service';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     CertificateModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AuthenticationController],
+  providers: [LegacyUserService],
 })
 export class AppModule {}

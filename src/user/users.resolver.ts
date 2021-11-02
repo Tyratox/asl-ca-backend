@@ -107,10 +107,14 @@ export class UsersResolver {
     description: 'Logs a user out, deletes the session id',
   })
   @UseGuards(GqlAuthGuard)
-  async logout(@CurrentSessionId() session_id: string) {
-    const result = await this.authenticationService.removeSession(session_id);
-    if (result.affected) {
-      return true;
+  async logout(@CurrentSessionId() session_id: string | undefined) {
+    if (session_id && session_id.length > 0) {
+      const result = await this.authenticationService.removeSession(session_id);
+      if (result.affected) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -144,7 +148,7 @@ export class UsersResolver {
     @Args({ name: 'newPassword' }) newPassword: string,
     @Args({ name: 'oldPassword' }) oldPassword: string,
     @CurrentUser() user: LegacyUserEntity,
-    @CurrentSessionId() session_id: string,
+    @CurrentSessionId() session_id: string | undefined,
   ) {
     if (await this.authenticationService.validatePassword(user, oldPassword)) {
       const updatedUser = await this.legacyUserService.updatePassword(
@@ -152,10 +156,12 @@ export class UsersResolver {
         newPassword,
       );
 
-      await this.authenticationService.removeSessionsByUserExcept(
-        user,
-        session_id,
-      );
+      if (session_id) {
+        await this.authenticationService.removeSessionsByUserExcept(
+          user,
+          session_id,
+        );
+      }
 
       return updatedUser;
     } else {

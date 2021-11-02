@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity({ name: 'certificates' })
@@ -25,8 +26,12 @@ export class CertificateEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ length: 64, nullable: false, default: '' })
+  userUid: string;
+
   @ManyToOne((type) => LegacyUserEntity, (user) => user.certificates, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'userUid' })
   user: LegacyUserEntity;
 }
