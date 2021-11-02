@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConnectionOptions } from 'typeorm';
 import { UsersModule } from './user/users.module';
 import { CertificateModule } from './certificate/certificate.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CertificateModule } from './certificate/certificate.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
+    ConfigModule.forRoot(),
     UsersModule,
     CertificateModule,
   ],
