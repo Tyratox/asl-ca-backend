@@ -1,5 +1,14 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, createUnionType, ID, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  createUnionType,
+  ID,
+  Query,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { type } from 'os';
 import {
   createNotFoundException,
@@ -8,8 +17,10 @@ import {
 import { CurrentUser } from 'src/user/authentication/current-user.decorator';
 import { GqlAuthGuard } from 'src/user/authentication/graphql-auth.guard';
 import { LegacyUserEntity } from 'src/user/legacy-user.entity';
+import { CertificateEntity } from './certificate.entity';
 import { Certificate } from './certificate.model';
 import { CertificateService } from './certificate.service';
+import { NewCertificate } from './new-certificate.model';
 import { RevokeCertificateSuccess } from './RevokeCertificateSucess.model';
 
 const RevokeCertificateReponse = createUnionType({
@@ -30,11 +41,34 @@ export class CertificateResolver {
 
   /* Fields */
 
+  @ResolveField('certificateFile', (returns) => String, {
+    description: 'The corresponding certificate file encoded in Base64',
+  })
+  @UseGuards(GqlAuthGuard)
+  async getCertificateFile(
+    @Parent() certificate: CertificateEntity,
+    @CurrentUser() user: LegacyUserEntity,
+  ) {
+    if (this.certificateService.findOneByIdAndUser(certificate.id, user)) {
+      return this.certificateService.getCertificateFile(certificate);
+    } else {
+      //TODO: should we allow everyone to download certificates?
+      return '';
+    }
+  }
+
   /* Queries */
+
+  @Query((returns) => String, {
+    description: 'The current certificate revocation list encoded in Base64',
+  })
+  async crl() {
+    return this.certificateService.getCertificateRevocationList();
+  }
 
   /* Mutations */
 
-  @Mutation((returns) => Certificate, {
+  @Mutation((returns) => NewCertificate, {
     description: 'Generates a new certificate',
   })
   @UseGuards(GqlAuthGuard)

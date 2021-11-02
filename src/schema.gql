@@ -11,6 +11,9 @@ type AuthenticationException {
 union AuthenticationResult = AuthenticationException | Session
 
 type Certificate {
+  """The corresponding certificate file encoded in Base64"""
+  certificateFile: String!
+
   """The date the certificate has been created"""
   created_at: DateTime!
 
@@ -37,7 +40,7 @@ type Mutation {
   authenticate(password: String!, username: String!): AuthenticationResult!
 
   """Generates a new certificate"""
-  generateCertificate(name: String!): Certificate!
+  generateCertificate(name: String!): NewCertificate!
 
   """Logs a user out, deletes the session id"""
   logout: Boolean!
@@ -52,6 +55,14 @@ type Mutation {
   updatePassword(newPassword: String!, oldPassword: String!): UpdatePasswordResult!
 }
 
+type NewCertificate {
+  """The certificate"""
+  certificate: Certificate!
+
+  """The prvate key encoded in Base64"""
+  privateKey: String!
+}
+
 """An exception that is raised during authentication"""
 type NotFoundException {
   """A message describing why the exception occured"""
@@ -59,6 +70,9 @@ type NotFoundException {
 }
 
 type Query {
+  """The current certificate revocation list encoded in Base64"""
+  crl: String!
+
   """Retrieves the current user"""
   me: User!
 }
