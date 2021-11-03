@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import { CertificateService } from '../certificate/certificate.service';
+import { CertificateService } from '../../certificate/certificate.service';
 import { LegacyUserService } from '../legacy-user.service';
 import { AuthenticationService } from './authentication.service';
 
