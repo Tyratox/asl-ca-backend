@@ -1,4 +1,4 @@
-import { LegacyUserEntity } from 'src/user/legacy-user.entity';
+import { LegacyUserEntity } from '../user/legacy-user.entity';
 import {
   Entity,
   Column,

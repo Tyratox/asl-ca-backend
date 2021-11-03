@@ -10,7 +10,7 @@ import {
   writeFileSync,
 } from 'fs';
 import { join } from 'path';
-import { LegacyUserEntity } from 'src/user/legacy-user.entity';
+import { LegacyUserEntity } from '../user/legacy-user.entity';
 import { Repository } from 'typeorm';
 import { CertificateEntity } from './certificate.entity';
 

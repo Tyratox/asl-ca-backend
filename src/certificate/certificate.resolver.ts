@@ -13,10 +13,10 @@ import { type } from 'os';
 import {
   createNotFoundException,
   NotFoundException,
-} from 'src/exceptions/not-found.exception';
-import { CurrentUser } from 'src/user/authentication/current-user.decorator';
-import { GqlAuthGuard } from 'src/user/authentication/graphql-auth.guard';
-import { LegacyUserEntity } from 'src/user/legacy-user.entity';
+} from '../exceptions/not-found.exception';
+import { CurrentUser } from '../user/authentication/current-user.decorator';
+import { GqlAuthGuard } from '../user/authentication/graphql-auth.guard';
+import { LegacyUserEntity } from '../user/legacy-user.entity';
 import { CertificateEntity } from './certificate.entity';
 import { Certificate } from './certificate.model';
 import { CertificateService } from './certificate.service';

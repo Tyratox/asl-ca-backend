@@ -9,7 +9,7 @@ import {
   Resolver,
   Scalar,
 } from '@nestjs/graphql';
-import { GqlAuthGuard } from 'src/user/authentication/graphql-auth.guard';
+import { GqlAuthGuard } from '../user/authentication/graphql-auth.guard';
 import { AuthenticationService } from './authentication/authentication.service';
 import { CurrentSessionId } from './authentication/current-session-id.decorator';
 import { CurrentUser } from './authentication/current-user.decorator';
@@ -19,11 +19,11 @@ import { User } from './user.model';
 import {
   AuthenticationException,
   createAuthenticationException,
-} from 'src/exceptions/authentication.exception';
+} from '../exceptions/authentication.exception';
 import {
   createWrongPasswordException,
   WrongPasswordException,
-} from 'src/exceptions/wrong-password.exception';
+} from '../exceptions/wrong-password.exception';
 import { Session } from './session.model';
 import { CertificateService } from '../certificate/certificate.service';
 import { Certificate } from '../certificate/certificate.model';

@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import { LegacyUserService } from 'src/user/legacy-user.service';
+import { LegacyUserService } from '../../user/legacy-user.service';
 import { SessionEntity } from '../session.entity';
 import { LessThan, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
