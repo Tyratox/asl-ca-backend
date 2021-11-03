@@ -1,5 +1,5 @@
 import { Field, Int, ID, ObjectType } from '@nestjs/graphql';
-import { Certificate } from 'src/certificate/certificate.model';
+import { Certificate } from '../certificate/certificate.model';
 
 @ObjectType({
   description:

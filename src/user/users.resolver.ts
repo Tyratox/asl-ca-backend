@@ -25,8 +25,8 @@ import {
   WrongPasswordException,
 } from 'src/exceptions/wrong-password.exception';
 import { Session } from './session.model';
-import { CertificateService } from 'src/certificate/certificate.service';
-import { Certificate } from 'src/certificate/certificate.model';
+import { CertificateService } from '../certificate/certificate.service';
+import { Certificate } from '../certificate/certificate.model';
 
 const AuthenticationResult = createUnionType({
   name: 'AuthenticationResult',

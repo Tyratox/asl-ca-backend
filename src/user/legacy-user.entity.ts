@@ -1,4 +1,4 @@
-import { CertificateEntity } from 'src/certificate/certificate.entity';
+import { CertificateEntity } from '../certificate/certificate.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { SessionEntity } from './session.entity';
 

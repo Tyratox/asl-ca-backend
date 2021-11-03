@@ -5,7 +5,7 @@ import { LegacyUserEntity } from './legacy-user.entity';
 import { UsersResolver } from './users.resolver';
 import { AuthenticationService } from './authentication/authentication.service';
 import { SessionEntity } from './session.entity';
-import { CertificateModule } from 'src/certificate/certificate.module';
+import { CertificateModule } from '../certificate/certificate.module';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { ConfigService } from '@nestjs/config';
 
