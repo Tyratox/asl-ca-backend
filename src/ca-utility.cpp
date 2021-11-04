@@ -19,12 +19,12 @@
 namespace fs = std::filesystem;
 using namespace std;
 
-std::string exec(const char* cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+string exec(const char* cmd) {
+    array<char, 128> buffer;
+    string result;
+    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
     if (!pipe) {
-        throw std::runtime_error("popen() failed!");
+        throw runtime_error("popen() failed!");
     }
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
         result += buffer.data();
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
             cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 4;
           }
-        } catch (std::exception const &e) {
+        } catch (exception const &e) {
           cout << "Serial file contains invalid content: " << serial << "!" << endl;
           return 5;
         }
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]){
             cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 7;
           }
-        } catch (std::exception const &e) {
+        } catch (exception const &e) {
           cout << "Serial file contains invalid content: " << serial << "!" << endl;
           return 8;
         }
@@ -211,7 +211,7 @@ int main(int argc, char *argv[]){
             cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 13;
           }
-        } catch (std::exception const &e) {
+        } catch (exception const &e) {
           cout << "Serial file contains invalid content: " << serial << "!" << endl;
           return 14;
         }
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]){
         return 3;
       }
 
-  } catch (std::exception const &e) {
+  } catch (exception const &e) {
     cout << "Invalid target was passed!" << endl;
     return 2;
   }
