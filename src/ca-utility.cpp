@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 
   if(argc <= 1){
     cout << "ca-utility requires at least three arguments!" << endl;
-    cout << "Usage: ./ca-utility /path/to/openssl.conf (sign|revoke) target" << endl;
+    cout << "Usage: ./ca-utility /path/to/openssl.conf (generate|request|sign|revoke) target" << endl;
     return 1;
   }
   string configPath = CONFIG_PATH_STRING;
@@ -223,7 +223,7 @@ int main(int argc, char *argv[]){
           return 15;
         }
 
-        string output = caPathCertificates + to_string(target) + ".crt";
+        string output = caPathCertificates + (target < 10 ? "0" + to_string(target) : to_string(target)) + ".pem";
 
         fs::path p2{ output };
         if (fs::exists(p2)){
