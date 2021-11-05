@@ -11,10 +11,11 @@
    3. For local development, `CLIENT_CERT_AUTH_REDIRECT_URL` can be set to `http://localhost:8080/login`.
 7. Build the binary that runs the OpenSSL command.
    1. The build script `build-ca-utility.sh` accepts several arguments:
-      1. The first argument is the output path of the binary, for example `./CA/ca-utility`
-      2. The second argument is the path to the CA directory, e.g. `/path/to/CA`
-      3. The third argument is the path to the OpenSSL config file. Usually this is `/etc/ssl/openssl.cnf`
-      4. The fourth argument is the path to the OpenSSL binary. Usually this is `/usr/bin/openssl`
+      1. The first argument is the path to the source file, e.g. `./src/ca-utility.cpp`
+      2. The second argument is the output path of the binary, for example `./CA/ca-utility`
+      3. The third argument is the path to the CA directory, e.g. `/path/to/CA`
+      4. The fourth argument is the path to the OpenSSL config file. Usually this is `/etc/ssl/openssl.cnf`
+      5. The fifth argument is the path to the OpenSSL binary. Usually this is `/usr/bin/openssl`
    2. The full command looks like `./build-ca-utility.sh ./CA/ca-utility /path/to/CA /etc/ssl/openssl.cnf /usr/bin/openssl`
    3. These arguments hard code the strings into the binary s.t. the binary doesn't have to rely on user input
    4. Copy the root certificate to `/path/to/CA/cacert.pem` and the (unencrypted) private key to `/path/to/CA/private/cakey.pem`
