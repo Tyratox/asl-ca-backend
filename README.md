@@ -17,7 +17,8 @@
       4. The fourth argument is the path to the OpenSSL binary. Usually this is `/usr/bin/openssl`
    2. The full command looks like `./build-ca-utility.sh ./CA/ca-utility /path/to/CA /etc/ssl/openssl.cnf /usr/bin/openssl`
    3. These arguments hard code the strings into the binary s.t. the binary doesn't have to rely on user input
-   4. If desired, the setuid bit of the binary can be set. For local development this is not required.
+   4. Copy the root certificate to `/path/to/CA/cacert.pem` and the (unencrypted) private key to `/path/to/CA/private/cakey.pem`
+   5. If desired, the setuid bit of the binary can be set. For local development this is not required.
 8. Populate the database using `yarn migrations:run` or `npm run migrations:run` (If this returns an error, drop all tables in the database first)
 9. Now the development server can be started using `yarn start / npm start` or `yarn start:dev / npm run start:dev` for hot reloading. (These scripts are defined in the `package.json` file)
 
@@ -77,6 +78,4 @@ server {
 `/etc/hosts` can be edited to forward requests to `cert.asl-ca.localhost` to localhost / `127.0.0.1` instead.
 
 # Known Issues
-- Nginx Error if no certificate has been revokes
-Workaround: Revoke at least one certificate
 - Revoked certificates are accepted until nginx is reloaded
