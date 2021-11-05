@@ -19,3 +19,63 @@
    3. These arguments hard code the strings into the binary s.t. the binary doesn't have to rely on user input
    4. If desired, the setuid bit of the binary can be set. For local development this is not required.
 8. Now the development server can be started using `yarn start / npm start` or `yarn start:dev / npm run start:dev` for hot reloading. (These scripts are defined in the `package.json` file)
+
+### Nginx configuration
+
+An nginx configuration that can be used for local development (in order to test for example the client certififcate authentication) is the following:
+
+```conf
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+  server_name asl-ca.localhost;
+
+  ssl_certificate "/path/to/certificate.crt";
+  ssl_certificate_key "/path/to/key.key";
+
+  location /authentication/tls-cert {
+	  deny all;
+  }
+
+  location / {
+    proxy_set_header   X-Forwarded-For $remote_addr;
+
+    proxy_set_header   Host $http_host;
+    proxy_pass         http://127.0.0.1:3000;
+  }
+}
+
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+  server_name cert.asl-ca.localhost;
+
+  ssl_certificate "/path/to/certificate.crt";
+  ssl_certificate_key "/path/to/key.key";
+  
+  # for client certificates
+  ssl_client_certificate "/path/to/CA/cacert.pem";
+  ssl_crl "/path/to/CA/crl/revoked.pem";
+  
+  # require authentication using TLS client certificates
+  ssl_verify_client on;
+  
+  location /authentication/tls-cert {
+    proxy_set_header   X-Forwarded-For $remote_addr;
+
+    # add client certificate as a header
+    proxy_set_header   X-SSL-CERT-SERIAL $ssl_client_serial;
+
+    proxy_set_header   Host $http_host;
+    proxy_pass         http://127.0.0.1:3000;
+  }
+}
+
+```
+
+`/etc/hosts` can be edited to forward requests to `cert.asl-ca.localhost` to localhost / `127.0.0.1` instead.
+
+# Known Issues
+- Nginx Error if no certificate has been revokes
+Workaround: Revoke at least one certificate
+- Revoked certificates are accepted until nginx is reloaded
