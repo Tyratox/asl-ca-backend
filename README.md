@@ -18,7 +18,7 @@
    2. The full command looks like `./build-ca-utility.sh ./CA/ca-utility /path/to/CA /etc/ssl/openssl.cnf /usr/bin/openssl`
    3. These arguments hard code the strings into the binary s.t. the binary doesn't have to rely on user input
    4. If desired, the setuid bit of the binary can be set. For local development this is not required.
-8. Populate the database using `yarn migrations:run` or `npm run migrations:run`
+8. Populate the database using `yarn migrations:run` or `npm run migrations:run` (If this returns an error, drop all tables in the database first)
 9. Now the development server can be started using `yarn start / npm start` or `yarn start:dev / npm run start:dev` for hot reloading. (These scripts are defined in the `package.json` file)
 
 ### Nginx configuration
