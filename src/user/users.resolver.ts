@@ -69,7 +69,7 @@ export class UsersResolver {
   }
 
   @ResolveField('certificates', (returns) => [Certificate])
-  async getCertificartes(@Parent() user: LegacyUserEntity) {
+  async getCertificates(@Parent() user: LegacyUserEntity) {
     return this.certificateService.findByUser(user);
   }
 
