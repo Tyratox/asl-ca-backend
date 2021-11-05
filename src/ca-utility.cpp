@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
         // IMPORTANT: no user input
         system(("cat '" + (caPath + "cacert.pem") + "' '" + caCrlFile + "' > '" + caRevokedFile + "'").c_str());
         // after updating the CRL, nginx must be reloded to take effect
-        system("nginx -s reload");
+        system("sudo nginx -s reload");
         return 0;
     } else {
         // child process
