@@ -13,6 +13,7 @@
 #include <array>
 #include <filesystem>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/wait.h>
 #include <regex>
 
@@ -40,7 +41,11 @@ int main(int argc, char *argv[]){
     return 1;
   }
 
-  setuid(UID);
+  if(setuid(UID) != 0){
+    cout << "Couldn't run setuid(" << UID << ")!" << endl; 
+    cout << "Error code (errno): " << errno << endl;
+    return 255;
+  }
 
   string configPath = CONFIG_PATH_STRING;
   string caPath = CA_PATH_STRING;
