@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
 then
-  echo "Usage: ./build-ca-utility.sh /input/ca-utility.cpp /output/ca-utility /path/to/CA /path/to/openssl.cnf /path/to/openssl"
+  echo "Usage: ./build-ca-utility.sh /input/ca-utility.cpp /output/ca-utility /path/to/CA /path/to/openssl.cnf /path/to/openssl SETUID_USER_ID"
   exit
 fi
 
@@ -30,4 +30,10 @@ then
   exit
 fi
 
-g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$5"
+if [ -z "$6" ]
+then
+  echo "UID is required!"
+  exit
+fi
+
+g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$5" -DUID="$6"

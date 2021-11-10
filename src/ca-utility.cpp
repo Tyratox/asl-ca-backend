@@ -39,6 +39,9 @@ int main(int argc, char *argv[]){
     cout << "Usage: ./ca-utility (generate|request|sign|revoke) target OR ./ca-utility update-crl" << endl;
     return 1;
   }
+
+  setuid(UID);
+
   string configPath = CONFIG_PATH_STRING;
   string caPath = CA_PATH_STRING;
   string opensslPath = OPENSSL_PATH_STRING;
