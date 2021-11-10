@@ -3,8 +3,10 @@
 #define CA_PATH_STRING STR_VALUE(CA_PATH)
 #define CONFIG_PATH_STRING STR_VALUE(CONFIG_PATH)
 #define OPENSSL_PATH_STRING STR_VALUE(OPENSSL_PATH)
+#define MKDIR_PATH_STRING STR_VALUE(MKDIR_PATH)
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <stdlib.h>
 #include <cstdio>
@@ -20,6 +22,12 @@
 namespace fs = std::filesystem;
 using namespace std;
 
+string configPath = CONFIG_PATH_STRING;
+string caPath = CA_PATH_STRING;
+string opensslPath = OPENSSL_PATH_STRING;
+string mkdirPath = MKDIR_PATH_STRING;
+
+
 string exec(const char* cmd) {
     array<char, 128> buffer;
     string result;
@@ -31,6 +39,46 @@ string exec(const char* cmd) {
         result += buffer.data();
     }
     return result;
+}
+
+void mkdir(const char* dir){
+  pid_t c_pid = fork();
+
+    if (c_pid == -1) {
+      throw runtime_error("couldn't fork!");
+  } else if (c_pid > 0) {
+      // parent process
+      // wait for child  to terminate
+      wait(nullptr);
+
+      return;
+  } else {
+      // child process
+      execl(mkdirPath.c_str(), "-p", dir, NULL);
+      return;
+  }
+}
+
+void writeFile(string file, string content){
+  std::ofstream outfile (file);
+  outfile << content << std::endl;
+  outfile.close();
+}
+
+string readFile(string file){
+  string content = "";
+  string line;
+  ifstream infile (file);
+  if (infile.is_open()){
+    while (getline(infile,line)){
+      content = content + '\n' + line;
+    }
+    infile.close();
+  }else{
+    throw runtime_error("Unable to open file");
+  }
+
+  return content;
 }
 
 int main(int argc, char *argv[]){
@@ -46,10 +94,6 @@ int main(int argc, char *argv[]){
     cout << "Error code (errno): " << errno << endl;
     return 255;
   }
-
-  string configPath = CONFIG_PATH_STRING;
-  string caPath = CA_PATH_STRING;
-  string opensslPath = OPENSSL_PATH_STRING;
 
   string caPathIndexFile = caPath + "index.txt";
   string caPathSerialFile = caPath + "serial";
@@ -68,28 +112,28 @@ int main(int argc, char *argv[]){
   string caPathCRL = caPath + "crl/";
 
   // safe since no user input is used
-  system(("mkdir -p '" + caPathUserKeys + "'").c_str());
-  system(("mkdir -p '" + caPathRequests + "'").c_str());
-  //system(("mkdir -p '" + caPathNewCertificates + "'").c_str());
-  system(("mkdir -p '" + caPathCertificates + "'").c_str());
-  system(("mkdir -p '" + caPathCRL + "'").c_str());
-  system(("mkdir -p '" + caTmp + "'").c_str());
+  mkdir(caPathUserKeys.c_str());
+  mkdir(caPathRequests.c_str());
+  //mkdir(caPathNewCertificates.c_str());
+  mkdir(caPathCertificates.c_str());
+  mkdir(caPathCRL.c_str());
+  mkdir(caTmp.c_str());
 
   fs::path index{ caPathIndexFile };
   if (!fs::exists(index)){
-    system(("touch '" + caPathIndexFile + "'").c_str());
+    writeFile(caPathIndexFile, "");
   }
   fs::path revoke{ caRevokedFile };
   if (!fs::exists(revoke)){
-    system(("touch '" + caRevokedFile + "'").c_str());
+    writeFile(caRevokedFile, "");
   }
   fs::path serial{ caPathSerialFile };
   if (!fs::exists(serial)){
-    system(("echo '01' > '" + caPathSerialFile + "'").c_str());
+    writeFile(caPathSerialFile, "01");
   }
   fs::path crlNum{ caCrlNumberFile };
   if (!fs::exists(crlNum)){
-    system(("echo '01' > '" + caCrlNumberFile + "'").c_str());
+    writeFile(caCrlNumberFile, "01");
   }
 
   string command = argv[1];
@@ -106,7 +150,10 @@ int main(int argc, char *argv[]){
         // generate the revoked.pem file required by nginx
         // use exec instead of execl as we need to pipe
         // IMPORTANT: no user input
-        system(("cat '" + (caPath + "cacert.pem") + "' '" + caCrlFile + "' > '" + caRevokedFile + "'").c_str());
+        string cert = readFile(caPath + "cacert.pem");
+        string crl = readFile(caCrlFile);
+        writeFile(caRevokedFile, cert + '\n' + crl);
+        //system(("cat '" + (caPath + "cacert.pem") + "' '" + caCrlFile + "' > '" + caRevokedFile + "'").c_str());
         // after updating the CRL, nginx must be reloded to take effect
         system("sudo nginx -s reload");
         return 0;
