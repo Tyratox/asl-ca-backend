@@ -43,13 +43,11 @@ export class AuthenticationController {
       user,
     );
 
-    const REDIRECT_URL = this.configService.get(
-      'CLIENT_CERT_AUTH_REDIRECT_URL',
-    );
+    const FRONTEND_URL = this.configService.get('FRONTEND_URL');
 
     if (session) {
       response.redirect(
-        `${REDIRECT_URL}?token=${encodeURIComponent(session.session_id)}`,
+        `${FRONTEND_URL}/login?token=${encodeURIComponent(session.session_id)}`,
       );
       return '';
     } else {

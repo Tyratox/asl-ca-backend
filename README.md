@@ -8,7 +8,7 @@
 5. Copy the configuration file `ormconfig-example.json` to `ormconfig.json` and add the credentials
 6. Copy the configuration file `.env-example` to `.env` and change the values.
    1. For local development the `CA_PATH` can easily be set to `/path/to/asl-ca-backend/CA` (but this directory has first to be created)
-   3. For local development, `CLIENT_CERT_AUTH_REDIRECT_URL` can be set to `http://localhost:8080/login`.
+   2. For local development, `FRONTEND_URL` can be set to `http://localhost:8080`.
 7. Build the binary that runs the OpenSSL command.
    1. The build script `build-ca-utility.sh` accepts several arguments:
       1. The first argument is the path to the source file, e.g. `./src/ca-utility.cpp`
