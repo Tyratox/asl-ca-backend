@@ -22,7 +22,7 @@ import { LegacyUserService } from './user/legacy-user.service';
     UsersModule,
     CertificateModule,
     GraphQLModule.forRootAsync({
-      imports: [ConfigService],
+      imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         debug: true,
         playground: true,
