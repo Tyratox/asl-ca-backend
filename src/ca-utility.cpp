@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <array>
 #include <filesystem>
+#include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
@@ -39,6 +40,9 @@ void mkdir(const char* dir){
 
       return;
   } else {
+      // don't print error messages such as "Folder already exists"
+      int devNull = open("/dev/null", O_WRONLY);
+      dup2(devNull, STDERR_FILENO);
       // child process
       execl(mkdirPath.c_str(), "-p", dir, NULL);
       return;
