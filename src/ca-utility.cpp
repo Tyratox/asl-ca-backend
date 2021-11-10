@@ -273,7 +273,7 @@ int main(int argc, char *argv[]){
 
         fs::path p2{ output };
         if (fs::exists(p2)){
-          cout << "File at path '" << input << "' already exists!" << endl;
+          cout << "File at path '" << output << "' already exists!" << endl;
           return 16;
         }
 
