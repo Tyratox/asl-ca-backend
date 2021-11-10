@@ -51,7 +51,10 @@ void mkdir(const char* dir){
 
 void writeFile(string file, string content){
   std::ofstream outfile (file);
-  outfile << content << std::endl;
+  outfile << content;
+  if(content != ""){
+    outfile << std::endl;
+  }
   outfile.close();
 }
 
@@ -254,7 +257,7 @@ int main(int argc, char *argv[]){
         try {
           int serial = stoi(serialString);
           if(target != serial){
-            cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
+            cout << "Serial file is at " << serial << ", you requested to sign " << target << endl;
             return 13;
           }
         } catch (exception const &e) {
@@ -313,6 +316,7 @@ int main(int argc, char *argv[]){
 
   } catch (exception const &e) {
     cout << "Invalid target was passed!" << endl;
+    // cout << "e.what(): " << e.what() << endl;
     return 2;
   }
 
