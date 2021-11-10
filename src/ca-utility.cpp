@@ -27,20 +27,6 @@ string caPath = CA_PATH_STRING;
 string opensslPath = OPENSSL_PATH_STRING;
 string mkdirPath = MKDIR_PATH_STRING;
 
-
-string exec(const char* cmd) {
-    array<char, 128> buffer;
-    string result;
-    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) {
-        throw runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
-}
-
 void mkdir(const char* dir){
   pid_t c_pid = fork();
 
@@ -177,7 +163,7 @@ int main(int argc, char *argv[]){
 
       if(command == "generate"){
         // read serial file
-        string serialString = exec(("cat '" + caPathSerialFile + "'").c_str());
+        string serialString = readFile(caPathSerialFile);
         try {
           int serial = stoi(serialString);
           if(target != serial){
@@ -205,7 +191,8 @@ int main(int argc, char *argv[]){
             // wait for child  to terminate
             wait(nullptr);
             // the user actually needs to have the private key so on generation return the contents!
-            cout << exec(("cat '" + output + "'").c_str()) << endl;
+            string outputString = readFile(output);
+            cout << outputString << endl;
             return 0;
         } else {
             // child process
@@ -215,7 +202,7 @@ int main(int argc, char *argv[]){
 
       }else if(command == "request"){
         // read serial file
-        string serialString = exec(("cat '" + caPathSerialFile + "'").c_str());
+        string serialString = readFile(caPathSerialFile);
         try {
           int serial = stoi(serialString);
           if(target != serial){
@@ -259,7 +246,7 @@ int main(int argc, char *argv[]){
           return 12;
         }
       }else if(command == "sign"){
-        string serialString = exec(("cat '" + caPathSerialFile + "'").c_str());
+        string serialString = readFile(caPathSerialFile);
         try {
           int serial = stoi(serialString);
           if(target != serial){
@@ -295,7 +282,8 @@ int main(int argc, char *argv[]){
             // wait for child  to terminate
             wait(nullptr);
             // the user actually needs to have the signed certificate so on signing return the contents!
-            cout << exec(("cat '" + output + "'").c_str()) << endl;
+            string outputString = readFile(output);
+            cout << outputString << endl;
             return 0;
         } else {
             // child process
