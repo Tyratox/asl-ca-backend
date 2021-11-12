@@ -30,7 +30,7 @@ import { LegacyUserService } from './user/legacy-user.service';
         sortSchema: true,
         cors: {
           origin: configService.get('FRONTEND_URL'),
-          methods: ['POST'],
+          methods: ['POST', 'OPTIONS'],
           allowedHeaders: [
             'Authorization',
             'Content-Type',
