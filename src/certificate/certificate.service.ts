@@ -50,7 +50,7 @@ export class CertificateService {
     });
 
     certificate = await this.certificateRepository.save(certificate);
-    const certificateId = certificate.id.toString().padStart(2, '0');
+    const certificateId = certificate.id.toString();
 
     const CA_PATH = this.configService.get<string>('CA_PATH');
     const CA_UTIL_PATH = join(CA_PATH, 'ca-utility');
@@ -65,33 +65,43 @@ export class CertificateService {
       ['generate', certificateId],
       {
         encoding: 'base64',
+        stdio: 'pipe',
       },
     );
-    execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email]);
+    execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email], {
+      stdio: 'pipe',
+    });
     const certFileInBase64 = execFileSync(
       CA_UTIL_PATH,
       ['sign', certificateId],
-      { encoding: 'base64' },
+      { encoding: 'base64', stdio: 'pipe' },
     );
-
     // write to tmp directory, we have it in memory anyway so it's probably okay
     // to write it to a directory for generating the p12 file
-    writeFileSync(TEMP_PATH_KEY, keyFileInBase64, { encoding: 'base64' });
-    writeFileSync(TEMP_PATH_CRT, certFileInBase64, { encoding: 'base64' });
+    writeFileSync(TEMP_PATH_KEY, keyFileInBase64, {
+      encoding: 'base64',
+    });
+    writeFileSync(TEMP_PATH_CRT, certFileInBase64, {
+      encoding: 'base64',
+    });
 
-    execFileSync('openssl', [
-      'pkcs12',
-      '-export',
-      '-in',
-      TEMP_PATH_CRT,
-      '-inkey',
-      TEMP_PATH_KEY,
-      '-out',
-      TEMP_PATH_P12,
-      '-passout',
-      /* empty password */
-      `pass:${password}`,
-    ]);
+    execFileSync(
+      'openssl',
+      [
+        'pkcs12',
+        '-export',
+        '-in',
+        TEMP_PATH_CRT,
+        '-inkey',
+        TEMP_PATH_KEY,
+        '-out',
+        TEMP_PATH_P12,
+        '-passout',
+        /* empty password */
+        `pass:${password}`,
+      ],
+      { stdio: 'pipe' },
+    );
     // read p12 file
     const p12 = readFileSync(TEMP_PATH_P12, { encoding: 'base64' });
     // delete the key, cert and p12 file
