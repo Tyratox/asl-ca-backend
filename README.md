@@ -14,7 +14,7 @@
       1. The first argument is the path to the source file, e.g. `./src/ca-utility.cpp`
       2. The second argument is the output path of the binary, for example `./CA/ca-utility`
       3. The third argument is the path to the CA directory, e.g. `/path/to/CA/`. **Important**: There has to be a slash at the end of the path.
-      4. The fourth argument is the path to the OpenSSL config file. Usually this is `/etc/ssl/openssl.cnf`. For macOS the config file has to be changed. See `./openssl-example.cnf`
+      4. The fourth argument is the path to the OpenSSL config file. Usually this is `/etc/ssl/openssl.cnf`. For macOS the config file has to be changed. See `./openssl-example.cnf`. Also update the path to the CA directory inside the config file.
       5. The fifth argument is the path to the OpenSSL binary. Usually this is `/usr/bin/openssl`
       6. The fifth argument is the path to the mkdir binary. Usually this is `/bin/mdkir`
       7. The last argument is the user id of the `setuid` system call. You can get your user id by running `id -u <username>`
