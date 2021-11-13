@@ -150,7 +150,7 @@ int main(int argc, char *argv[]){
         writeFile(caRevokedFile, cert + '\n' + crl);
         //system(("cat '" + (caPath + "cacert.pem") + "' '" + caCrlFile + "' > '" + caRevokedFile + "'").c_str());
         // after updating the CRL, nginx must be reloded to take effect
-        system("sudo nginx -s reload");
+        // system("sudo nginx -s reload");
         return 0;
     } else {
         // child process
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]){
         // read serial file
         string serialString = readFile(caPathSerialFile);
         try {
-          int serial = stoi(serialString);
+          int serial = stoi(serialString, 0, 16);
           if(target != serial){
             cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 4;
@@ -213,7 +213,7 @@ int main(int argc, char *argv[]){
         // read serial file
         string serialString = readFile(caPathSerialFile);
         try {
-          int serial = stoi(serialString);
+          int serial = stoi(serialString, 0, 16);
           if(target != serial){
             cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 7;
@@ -257,7 +257,7 @@ int main(int argc, char *argv[]){
       }else if(command == "sign"){
         string serialString = readFile(caPathSerialFile);
         try {
-          int serial = stoi(serialString);
+          int serial = stoi(serialString, 0, 16);
           if(target != serial){
             cout << "Serial file is at " << serial << ", you requested to sign " << target << endl;
             return 13;
