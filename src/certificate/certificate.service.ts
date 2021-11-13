@@ -104,7 +104,7 @@ export class CertificateService {
 
   getCertificateRevocationList() {
     const CA_PATH = this.configService.get<string>('CA_PATH');
-    const CRL_PATH = join(CA_PATH, 'crl', 'crl.pem');
+    const CRL_PATH = join(CA_PATH, 'crl', 'revoked.pem');
 
     try {
       const content = readFileSync(CRL_PATH, {
