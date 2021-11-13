@@ -16,9 +16,8 @@
       3. The third argument is the path to the CA directory, e.g. `/path/to/CA/`. **Important**: There has to be a slash at the end of the path.
       4. The fourth argument is the path to the OpenSSL config file. Usually this is `/etc/ssl/openssl.cnf`. For macOS the config file has to be changed. See `./openssl-example.cnf`. Also update the path to the CA directory inside the config file.
       5. The fifth argument is the path to the OpenSSL binary. Usually this is `/usr/bin/openssl`
-      6. The fifth argument is the path to the mkdir binary. Usually this is `/bin/mdkir`
-      7. The last argument is the user id of the `setuid` system call. You can get your user id by running `id -u <username>`
-   2. The full command looks like `./build-ca-utility.sh ./src/ca-utility.cpp ./CA/ca-utility /path/to/CA/ /etc/ssl/openssl.cnf /usr/bin/openssl /bin/mdkir xx`
+      6. The last argument is the user id of the `setuid` system call. You can get your user id by running `id -u <username>`
+   2. The full command looks like `./build-ca-utility.sh ./src/ca-utility.cpp ./CA/ca-utility /path/to/CA/ /etc/ssl/openssl.cnf /usr/bin/openssl xx`
    3. These arguments hard code the strings into the binary s.t. the binary doesn't have to rely on user input
    4. Copy the root certificate to `/path/to/CA/cacert.pem` and the (unencrypted) private key to `/path/to/CA/private/cakey.pem`
    5. If desired, the setuid bit of the binary can be set. For local development this is not required.
