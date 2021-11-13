@@ -93,14 +93,14 @@ string readFile(string file){
 int main(int argc, char *argv[]){
 
   if(argc <= 1){
-    cout << "ca-utility requires at least one argument!" << endl;
-    cout << "Usage: ./ca-utility (generate|request|sign|revoke) target OR ./ca-utility update-crl" << endl;
+    cerr << "ca-utility requires at least one argument!" << endl;
+    cerr << "Usage: ./ca-utility (generate|request|sign|revoke) target OR ./ca-utility update-crl" << endl;
     return 1;
   }
 
   if(setuid(UID) != 0){
-    cout << "Couldn't run setuid(" << UID << ")!" << endl; 
-    cout << "Error code (errno): " << errno << endl;
+    cerr << "Couldn't run setuid(" << UID << ")!" << endl; 
+    cerr << "Error code (errno): " << errno << endl;
     return 255;
   }
 
@@ -176,8 +176,8 @@ int main(int argc, char *argv[]){
     
     return 0;
   }else if(argc <= 2){
-    cout << "ca-utility requires at least two arguments!" << endl;
-    cout << "Usage: ./ca-utility (generate|request|sign|revoke) target" << endl;
+    cerr << "ca-utility requires at least two arguments!" << endl;
+    cerr << "Usage: ./ca-utility (generate|request|sign|revoke) target" << endl;
     return 1;
   }
 
@@ -192,18 +192,18 @@ int main(int argc, char *argv[]){
         try {
           int serial = stoi(serialString, 0, 16);
           if(target != serial){
-            cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
+            cerr << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 4;
           }
         } catch (exception const &e) {
-          cout << "Serial file contains invalid content: " << serial << "!" << endl;
+          cerr << "Serial file contains invalid content: " << serial << "!" << endl;
           return 5;
         }
 
         string output = caPathUserKeys + to_string(target) + ".key";
         fs::path p{ output };
         if (fs::exists(p)){
-          cout << "File at path '" << output << "' already exists!" << endl;
+          cerr << "File at path '" << output << "' already exists!" << endl;
           return 6;
         }
 
@@ -231,31 +231,31 @@ int main(int argc, char *argv[]){
         try {
           int serial = stoi(serialString, 0, 16);
           if(target != serial){
-            cout << "Serial file is at " << serial << ", you requested to generate " << target << endl;
+            cerr << "Serial file is at " << serial << ", you requested to generate " << target << endl;
             return 7;
           }
         } catch (exception const &e) {
-          cout << "Serial file contains invalid content: " << serial << "!" << endl;
+          cerr << "Serial file contains invalid content: " << serial << "!" << endl;
           return 8;
         }
 
         string output = caPathRequests + to_string(target) + ".csr";
         fs::path p{ output };
         if (fs::exists(p)){
-          cout << "File at path '" << output << "' already exists!" << endl;
+          cerr << "File at path '" << output << "' already exists!" << endl;
           return 9;
         }
 
         string input = caPathUserKeys + to_string(target) + ".key";
         fs::path p2{ input };
         if (!fs::exists(p2)){
-          cout << "File at path '" << input << "' does not exists!" << endl;
+          cerr << "File at path '" << input << "' does not exists!" << endl;
           return 10;
         }
 
         //-subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com
         if(argc <= 3){
-          cout << "For creating a certificate request, a common name has to be passed!" << endl;
+          cerr << "For creating a certificate request, a common name has to be passed!" << endl;
           return 11;
         }
 
@@ -267,7 +267,7 @@ int main(int argc, char *argv[]){
           execl(opensslPath.c_str(), "openssl", "req", "-new", "-key", input.c_str(), "-out", output.c_str(), "-subj", subject.c_str(), NULL);
           return 0;
         }else{
-          cout << "The passed common name is invalid!" << endl;
+          cerr << "The passed common name is invalid!" << endl;
           return 12;
         }
       }else if(command == "sign"){
@@ -275,18 +275,18 @@ int main(int argc, char *argv[]){
         try {
           int serial = stoi(serialString, 0, 16);
           if(target != serial){
-            cout << "Serial file is at " << serial << ", you requested to sign " << target << endl;
+            cerr << "Serial file is at " << serial << ", you requested to sign " << target << endl;
             return 13;
           }
         } catch (exception const &e) {
-          cout << "Serial file contains invalid content: " << serial << "!" << endl;
+          cerr << "Serial file contains invalid content: " << serial << "!" << endl;
           return 14;
         }
 
         string input = caPathRequests + to_string(target) + ".csr";
         fs::path p{ input };
         if (!fs::exists(p)){
-          cout << "File at path '" << input << "' does not exists!" << endl;
+          cerr << "File at path '" << input << "' does not exists!" << endl;
           return 15;
         }
 
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]){
 
         fs::path p2{ output };
         if (fs::exists(p2)){
-          cout << "File at path '" << output << "' already exists!" << endl;
+          cerr << "File at path '" << output << "' already exists!" << endl;
           return 16;
         }
 
@@ -321,20 +321,20 @@ int main(int argc, char *argv[]){
         string input = caPathCertificates + int_to_hex_string(target) + ".pem";
         fs::path p{ input };
         if (!fs::exists(p)){
-          cout << "File at path '" << input << "' does not exists!" << endl;
+          cerr << "File at path '" << input << "' does not exists!" << endl;
           return 17;
         }
 
         execl(opensslPath.c_str(), "openssl", "ca", "-revoke", input.c_str(), "-config", configPath.c_str(), NULL);
         return 0;
       }else{
-        cout << "Unknown command '" << command << "'" << endl;
+        cerr << "Unknown command '" << command << "'" << endl;
         return 3;
       }
 
   } catch (exception const &e) {
-    cout << "Invalid target was passed!" << endl;
-    // cout << "e.what(): " << e.what() << endl;
+    cerr << "Invalid target was passed!" << endl;
+    // cerr << "e.what(): " << e.what() << endl;
     return 2;
   }
 
