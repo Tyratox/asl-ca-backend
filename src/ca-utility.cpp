@@ -6,6 +6,8 @@
 #define MKDIR_PATH_STRING STR_VALUE(MKDIR_PATH)
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
@@ -47,6 +49,14 @@ void mkdir(const char* dir){
       execl(mkdirPath.c_str(), "-p", dir, NULL);
       return;
   }
+}
+
+string int_to_hex_string(int i){
+  std::stringstream stream;
+  stream << std::hex << i;
+  std::string result( stream.str() );
+
+  return  i < 16 ? ("0" + result) : result;
 }
 
 void writeFile(string file, string content){
@@ -274,7 +284,7 @@ int main(int argc, char *argv[]){
           return 15;
         }
 
-        string output = caPathCertificates + (target < 10 ? "0" + to_string(target) : to_string(target)) + ".pem";
+        string output = caPathCertificates + int_to_hex_string(target) + ".pem";
 
         fs::path p2{ output };
         if (fs::exists(p2)){
@@ -302,7 +312,7 @@ int main(int argc, char *argv[]){
         
         return 0;
       }else if(command == "revoke"){
-        string input = caPathCertificates + (target < 10 ? "0" + to_string(target) : to_string(target)) + ".pem";
+        string input = caPathCertificates + int_to_hex_string(target) + ".pem";
         fs::path p{ input };
         if (!fs::exists(p)){
           cout << "File at path '" << input << "' does not exists!" << endl;
