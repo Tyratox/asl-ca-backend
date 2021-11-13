@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <regex>
+#include <cctype>
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -55,6 +56,11 @@ string int_to_hex_string(int i){
   std::stringstream stream;
   stream << std::hex << i;
   std::string result( stream.str() );
+  for(int j = 0; j < int(result.size()); j++) {
+      if(isalpha(result[j])) {
+          result[j] = toupper(result[j]);
+      }
+  }
 
   return  i < 16 ? ("0" + result) : result;
 }
