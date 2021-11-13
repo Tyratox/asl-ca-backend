@@ -141,16 +141,20 @@ export class CertificateService {
   }
 
   async revokeCertificate(certificate: CertificateEntity) {
-    const CA_PATH = this.configService.get<string>('CA_PATH');
-    const CA_UTIL_PATH = join(CA_PATH, 'ca-utility');
-    const certificateId = certificate.id.toString();
+    return new Promise((resolve, reject) => {
+      this.lock.acquire('revokeCertificate', () => {
+        const CA_PATH = this.configService.get<string>('CA_PATH');
+        const CA_UTIL_PATH = join(CA_PATH, 'ca-utility');
+        const certificateId = certificate.id.toString();
 
-    execFileSync(CA_UTIL_PATH, ['revoke', certificateId]);
-    execFileSync(CA_UTIL_PATH, ['update-crl']);
+        execFileSync(CA_UTIL_PATH, ['revoke', certificateId]);
+        execFileSync(CA_UTIL_PATH, ['update-crl']);
 
-    // if system calls succeeded, also store in database
-    certificate.is_revoked = true;
+        // if system calls succeeded, also store in database
+        certificate.is_revoked = true;
 
-    return this.certificateRepository.save(certificate);
+        resolve(this.certificateRepository.save(certificate));
+      });
+    });
   }
 }
