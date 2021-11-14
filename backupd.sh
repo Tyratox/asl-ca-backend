@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Reading backupd.cnf ..."
 source backupd.cnf # TODO change to absolute path
 cd "$LOCAL_CA_PATH"
 
