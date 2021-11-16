@@ -40,3 +40,4 @@ ormconfig.json
 
 # development CA directory
 CA/
+CA_enc/
