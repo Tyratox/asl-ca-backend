@@ -47,7 +47,7 @@ void mkdir(const char* dir){
       int devNull = open("/dev/null", O_WRONLY);
       dup2(devNull, STDERR_FILENO);
       // child process
-      execl(mkdirPath.c_str(), "-p", dir, NULL);
+      execl(mkdirPath.c_str(), "mkdir", "-p", dir, NULL);
       return;
   }
 }
