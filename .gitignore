@@ -43,3 +43,4 @@ backup/backupd.cnf
 CA/
 CA_enc/
 tmp/
+backup/encrypt
