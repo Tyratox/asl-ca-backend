@@ -8,6 +8,7 @@ import {
   Parent,
   ResolveField,
   Resolver,
+  Int,
 } from '@nestjs/graphql';
 import { type } from 'os';
 import {
@@ -50,8 +51,29 @@ export class CertificateResolver {
     return this.certificateService.getCertificateRevocationList();
   }
 
-  /* Mutations */
+  @Query((returns) => String, {
+    description: 'Current serial number.',
+  })
+  async getSerialNumber() {
+    return this.certificateService.serialNumber();
+  }
 
+  @Query((returns) => Int, {
+    description: 'The total number of certificates.',
+  })
+  async getCertCount() {
+    return this.certificateService.countAll();
+  }
+
+  @Query((returns) => Int, {
+    description: 'The total number of revoked certificates.',
+  })
+  async getRevokedCertCount() {
+    return this.certificateService.countAllRevoked();
+  }
+
+  /* Mutations */
+  // TODO, don't allow admins to generate new Certificates
   @Mutation((returns) => NewCertificate, {
     description: 'Generates a new certificate',
   })

@@ -10,6 +10,7 @@ import {
   Scalar,
 } from '@nestjs/graphql';
 import { GqlAuthGuard } from '../user/authentication/graphql-auth.guard';
+import { AdministratorService } from './administrator.service';
 import { AuthenticationService } from './authentication/authentication.service';
 import { CurrentSessionId } from './authentication/current-session-id.decorator';
 import { CurrentUser } from './authentication/current-user.decorator';
@@ -58,6 +59,7 @@ export class UsersResolver {
     private legacyUserService: LegacyUserService,
     private authenticationService: AuthenticationService,
     private certificateService: CertificateService,
+    private administratorService: AdministratorService,
   ) {}
 
   /* Fields */
@@ -71,6 +73,11 @@ export class UsersResolver {
   @ResolveField('certificates', (returns) => [Certificate])
   async getCertificates(@Parent() user: LegacyUserEntity) {
     return this.certificateService.findByUser(user);
+  }
+
+  @ResolveField('isAdmin', (returns) => Boolean)
+  async getAdmin(@Parent() user: LegacyUserEntity) {
+    return this.administratorService.isAdmin(user.uid);
   }
 
   /* Queries */
