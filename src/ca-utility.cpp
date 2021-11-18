@@ -80,7 +80,11 @@ string readFile(string file){
   ifstream infile (file);
   if (infile.is_open()){
     while (getline(infile,line)){
-      content = content + '\n' + line;
+      if(content == ""){
+        content = line;
+      }else{
+        content = content + '\n' + line;
+      }
     }
     infile.close();
   }else{
