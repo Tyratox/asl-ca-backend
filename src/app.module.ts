@@ -24,8 +24,8 @@ import { LegacyUserService } from './user/legacy-user.service';
     GraphQLModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        debug: true,
-        playground: true,
+        debug: false,
+        playground: false,
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
         cors: {
