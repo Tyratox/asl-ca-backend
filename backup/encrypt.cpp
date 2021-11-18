@@ -53,24 +53,24 @@ int main(int argc, char *argv[]){
     throw runtime_error("Usage: ./encrypt file dir action LOCAL_FOLDER_NAME LOCAL_enc_PATH CIPHER_MODE KEY_PATH");
   }
 
-  string file = argv[1];
-  string dir = argv[2];
+  string dir_str = argv[1];
+  string file_str = argv[2];
+
+  fs::path file(dir_str + file_str);
   string action = argv[3];
-  string LOCAL_FOLDER_NAME = argv[4];
-  string LOCAL_enc_PATH = argv[5];
+  fs::path CA_PATH(argv[4]);
+
+  fs::path ENC_PATH(argv[5]);
   string CIPHER_MODE = argv[6];
   string KEY_PATH = argv[7];
+  
+  fs::path relative_path = fs::relative(file, CA_PATH);
 
-  string local_dir = std::regex_replace(dir, std::regex(LOCAL_FOLDER_NAME), "");
+  fs::path file_enc =  ENC_PATH / relative_path;
 
-  string local_enc_dir =  LOCAL_enc_PATH + local_dir;
-  string enc_file_name = local_enc_dir + file + ".enc";
+  mkdir(file_enc.parent_path().c_str());
 
-  mkdir(local_enc_dir.c_str());
-
-  cout << ("." + local_dir + file) << endl;
-  return 0;
-  execl(opensslPath.c_str(), "enc", "-in", ("." + local_dir + file).c_str(), "-out", enc_file_name.c_str(), "-e", CIPHER_MODE.c_str(), "-k", KEY_PATH.c_str(), NULL);
+  execl(opensslPath.c_str(), "enc", "-in", file.c_str(), "-out", file_enc.c_str(), "-e", CIPHER_MODE.c_str(), "-k", KEY_PATH.c_str(), NULL);
 
   return 0;
 }
