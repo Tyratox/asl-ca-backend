@@ -22,6 +22,7 @@
 #include <sys/wait.h>
 #include <regex>
 #include <cctype>
+#include <time.h>
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -30,6 +31,19 @@ string configPath = CONFIG_PATH_STRING;
 string caPath = CA_PATH_STRING;
 string opensslPath = OPENSSL_PATH_STRING;
 string mkdirPath = MKDIR_PATH_STRING;
+
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    return buf;
+}
+
 
 void mkdir(const char* dir){
   pid_t c_pid = fork();
@@ -218,6 +232,7 @@ int main(int argc, char *argv[]){
             wait(nullptr);
             // the user actually needs to have the private key so on generation return the contents!
             string outputString = readFile(output);
+            cerr << currentDateTime() << " : Certificate generated --- key : " << target << endl;
             cout << outputString << endl;
             return 0;
         } else {
@@ -226,7 +241,7 @@ int main(int argc, char *argv[]){
             return 0;
         }
 
-      }else if(command == "request"){
+      } else if(command == "request"){
         // read serial file
         string serialString = readFile(caPathSerialFile);
         try {
@@ -256,7 +271,7 @@ int main(int argc, char *argv[]){
 
         //-subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com
         if(argc <= 3){
-          cerr << "For creating a certificate request, a common name has to be passed!" << endl;
+          cerr << "For creating a Certificate request, a common name has to be passed!" << endl;
           return 11;
         }
 
@@ -268,12 +283,15 @@ int main(int argc, char *argv[]){
           string subject = "/C=CH/ST=Zurich/L=Zurich/O=iMovies/OU=IT/CN=" + commonName;
           
           system(("openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"").c_str());
+          cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", email : " << commonName << endl;
+        
           return 0;
-        }else{
+        } else{
           cerr << "The passed common name is invalid!" << endl;
           return 12;
         }
-      }else if(command == "sign"){
+
+      } else if(command == "sign"){
         string serialString = readFile(caPathSerialFile);
         try {
           int serial = stoi(serialString, 0, 16);
@@ -311,6 +329,7 @@ int main(int argc, char *argv[]){
             wait(nullptr);
             // the user actually needs to have the signed certificate so on signing return the contents!
             string outputString = readFile(output);
+            cerr << currentDateTime() << " : Certificate signed --- " << " key : " << target << endl;
             cout << outputString << endl;
             return 0;
         } else {
@@ -328,6 +347,7 @@ int main(int argc, char *argv[]){
           return 17;
         }
 
+        cerr << currentDateTime() << " : Certificate revoked --- " << " key : " << target << endl;
         execl(opensslPath.c_str(), "openssl", "ca", "-revoke", input.c_str(), "-config", configPath.c_str(), NULL);
         return 0;
       }else{
