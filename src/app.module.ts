@@ -32,6 +32,7 @@ import { LegacyUserService } from './user/legacy-user.service';
           origin: configService.get('FRONTEND_URL'),
           methods: ['POST', 'OPTIONS'],
           allowedHeaders: [
+            /* nginx headers don't have to be included here, this is just for the browser to know */
             'Authorization',
             'Content-Type',
             'Accept',
