@@ -1,0 +1,14 @@
+LOCAL_CA_PATH="/home/elias/CA"
+LOCAL_CA_FOLDER_NAME="CA"
+LOCAL_CA_enc_PATH="/home/elias/CA_enc"
+
+LOCAL_DB_PATH="/home/elias/asdf"
+LOCAL_DB_FOLDER_NAME="asdf"
+LOCAL_DB_enc_PATH="/home/elias/DB_enc"
+
+KEY_PATH="/home/elias/ca.imovies.ch.aes-256.key"
+CIPHER_MODE="aes-256-cbc"
+
+REMOTE_CA_enc_PATH="/home/elias/CA_enc"
+REMOTE_DB_enc_PATH="/home/elias/DB_enc"
+REMOTE_HOST="ubi"

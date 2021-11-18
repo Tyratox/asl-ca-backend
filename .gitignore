@@ -37,7 +37,9 @@ lerna-debug.log*
 # config files
 .env
 ormconfig.json
+backup/backupd.cnf
 
 # development CA directory
 CA/
 CA_enc/
+tmp/
