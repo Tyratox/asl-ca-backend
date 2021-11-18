@@ -160,8 +160,9 @@ int main(int argc, char *argv[]){
         string cert = readFile(caPath + "cacert.pem");
         string crl = readFile(caCrlFile);
         writeFile(caRevokedFile, cert + '\n' + crl);
-        //system(("cat '" + (caPath + "cacert.pem") + "' '" + caCrlFile + "' > '" + caRevokedFile + "'").c_str());
+        
         // after updating the CRL, nginx must be reloded to take effect
+        // !leave this comment below, in deployment the // are removed!
         // system("sudo nginx -s reload");
         return 0;
     } else {
@@ -256,11 +257,13 @@ int main(int argc, char *argv[]){
         }
 
         string commonName = argv[3];
-        regex e ("[A-z]*@imovies\\.ch");
+
+        // sanitize input
+        regex e (".*@imovies\\.ch");
         if (regex_match(commonName,e)){
           string subject = "/C=CH/ST=Zurich/L=Zurich/O=iMovies/OU=IT/CN=" + commonName;
-          // IMPORTANT: use execl, prevents execution of arbitrary shell commands!
-          execl(opensslPath.c_str(), "openssl", "req", "-new", "-key", input.c_str(), "-out", output.c_str(), "-subj", subject.c_str(), NULL);
+          
+          system(("openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"").c_str());
           return 0;
         }else{
           cerr << "The passed common name is invalid!" << endl;
