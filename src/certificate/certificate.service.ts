@@ -61,11 +61,12 @@ export class CertificateService {
       const certificateId = certificate.id.toString();
 
       const CA_PATH = this.configService.get<string>('CA_PATH');
+      const TEMP_PATH = this.configService.get<string>('TMP_PATH');
       const CA_UTIL_PATH = join(CA_PATH, 'ca-utility');
 
-      const TEMP_PATH_CRT = join(CA_PATH, 'tmp', certificateId + '.crt');
-      const TEMP_PATH_KEY = join(CA_PATH, 'tmp', certificateId + '.key');
-      const TEMP_PATH_P12 = join(CA_PATH, 'tmp', certificateId + '.p12');
+      const TEMP_PATH_CRT = join(TEMP_PATH, certificateId + '.crt');
+      const TEMP_PATH_KEY = join(TEMP_PATH, certificateId + '.key');
+      const TEMP_PATH_P12 = join(TEMP_PATH, certificateId + '.p12');
 
       // IMPORTANT: DON'T ENABLE THE SHELL OPTION, WE HAVE USER CONTROLLED INPUT
       const keyFileInBase64 = execFileSync(

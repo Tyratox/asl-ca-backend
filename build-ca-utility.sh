@@ -1,10 +1,11 @@
 #!/bin/bash
 
-mkdir_path=$(which mkdir)
+MKDIR_PATH=$(which mkdir)
+OPENSSL_PATH=$(which openssl)
 
 if [ -z "$1" ]
 then
-  echo "Usage: ./build-ca-utility.sh /input/ca-utility.cpp /output/ca-utility /path/to/CA /path/to/openssl.cnf /path/to/openssl /path/to/mkdir SETUID_USER_ID"
+  echo "Usage: ./build-ca-utility.sh /input/ca-utility.cpp /output/ca-utility /path/to/CA /path/to/openssl.cnf SETUID_USER_ID"
   exit
 fi
 
@@ -28,14 +29,8 @@ fi
 
 if [ -z "$5" ]
 then
-  echo "OpenSSL path is required!"
-  exit
-fi
-
-if [ -z "$6" ]
-then
   echo "UID is required!"
   exit
 fi
 
-g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$5" -DMKDIR_PATH="$mkdir_path" -DUID="$6"
+g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$OPENSSL_PATH" -DMKDIR_PATH="$MKDIR_PATH" -DUID="$5"
