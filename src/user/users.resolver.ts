@@ -97,6 +97,11 @@ export class UsersResolver {
     @Args({ name: 'username' }) username: string,
     @Args({ name: 'password' }) password: string,
   ) {
+    if (this.administratorService.isAdmin(username)) {
+      return createAuthenticationException(
+        'The provided username and password combination does not exist',
+      );
+    }
     const session = await this.authenticationService.authenticateUser(
       username,
       password,
