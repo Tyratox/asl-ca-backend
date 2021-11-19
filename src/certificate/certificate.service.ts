@@ -74,6 +74,8 @@ export class CertificateService {
         user,
       });
 
+      console.log(Date() + " Generating certificate for user : " + user.uid + ", with certificate name : " + name);
+
       certificate = await this.certificateRepository.save(certificate);
 
       const certificateId = certificate.id.toString();
@@ -87,6 +89,8 @@ export class CertificateService {
       const TEMP_PATH_P12 = join(TEMP_PATH, certificateId + '.p12');
 
       // IMPORTANT: DON'T ENABLE THE SHELL OPTION, WE HAVE USER CONTROLLED INPUT
+
+      console.log(Date() + " Calling : " + CA_UTIL_PATH + " generate " + certificateId);
       const keyFileInBase64 = execFileSync(
         CA_UTIL_PATH,
         ['generate', certificateId],
@@ -95,9 +99,13 @@ export class CertificateService {
           stdio: 'pipe',
         },
       );
+      console.log(Date() + " Calling : " + CA_UTIL_PATH + " request " + certificateId + " " + user.email);
+
       execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email], {
         stdio: 'pipe',
       });
+      console.log(Date() + " Calling : " + CA_UTIL_PATH + " sign " + certificateId);
+
       const certFileInBase64 = execFileSync(
         CA_UTIL_PATH,
         ['sign', certificateId],
