@@ -31,7 +31,7 @@ export class CertificateService {
 
   async serialNumber() {
     const count = await this.certificateRepository.count();
-    return (count + 1).toString(16);
+    return (count + 1).toString(16).padStart(2, '0');
   }
 
   countAll() {
