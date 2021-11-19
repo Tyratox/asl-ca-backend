@@ -8,8 +8,10 @@ import {
   Parent,
   ResolveField,
   Resolver,
+  Int,
 } from '@nestjs/graphql';
 import { type } from 'os';
+import { GqlAdminGuard } from 'src/user/authentication/graphql-admin.guard';
 import {
   createNotFoundException,
   NotFoundException,
@@ -50,8 +52,31 @@ export class CertificateResolver {
     return this.certificateService.getCertificateRevocationList();
   }
 
-  /* Mutations */
+  @Query((returns) => String, {
+    description: 'Current serial number.',
+  })
+  @UseGuards(GqlAuthGuard, GqlAdminGuard)
+  async getSerialNumber() {
+    return this.certificateService.serialNumber();
+  }
 
+  @Query((returns) => Int, {
+    description: 'The total number of certificates.',
+  })
+  @UseGuards(GqlAuthGuard, GqlAdminGuard)
+  async getCertCount() {
+    return this.certificateService.countAll();
+  }
+
+  @Query((returns) => Int, {
+    description: 'The total number of revoked certificates.',
+  })
+  @UseGuards(GqlAuthGuard, GqlAdminGuard)
+  async getRevokedCertCount() {
+    return this.certificateService.countAllRevoked();
+  }
+
+  /* Mutations */
   @Mutation((returns) => NewCertificate, {
     description: 'Generates a new certificate',
   })

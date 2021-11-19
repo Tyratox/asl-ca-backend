@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdministratorService } from 'src/user/administrator.service';
 import { LegacyUserService } from '../user/legacy-user.service';
 import { UsersModule } from '../user/users.module';
 import { CertificateEntity } from './certificate.entity';
@@ -14,6 +15,11 @@ import { CertificateService } from './certificate.service';
     ConfigModule,
   ],
   exports: [TypeOrmModule, CertificateService],
-  providers: [CertificateService, CertificateResolver, LegacyUserService],
+  providers: [
+    CertificateService,
+    CertificateResolver,
+    LegacyUserService,
+    AdministratorService,
+  ],
 })
 export class CertificateModule {}

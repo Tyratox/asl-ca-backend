@@ -70,6 +70,15 @@ type Query {
   """The current certificate revocation list encoded in Base64"""
   crl: String!
 
+  """The total number of certificates."""
+  getCertCount: Int!
+
+  """The total number of revoked certificates."""
+  getRevokedCertCount: Int!
+
+  """Current serial number."""
+  getSerialNumber: String!
+
   """Retrieves the current user"""
   me: User!
 }
@@ -98,6 +107,7 @@ type User {
 
   """The user's firstname from the legacy database"""
   firstname: String!
+  isAdmin: Boolean!
 
   """The user's lastname from the legacy database"""
   lastname: String!

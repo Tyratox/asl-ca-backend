@@ -11,10 +11,11 @@ import {
 } from 'fs';
 import { join } from 'path';
 import { LegacyUserEntity } from '../user/legacy-user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CertificateEntity } from './certificate.entity';
 
 import * as AsyncLock from 'async-lock';
+import { Int } from '@nestjs/graphql';
 
 @Injectable()
 export class CertificateService {
@@ -26,6 +27,23 @@ export class CertificateService {
     private configService: ConfigService,
   ) {
     this.lock = new AsyncLock();
+  }
+
+  async serialNumber() {
+    const count = await this.certificateRepository.count();
+    return (count + 1).toString(16).padStart(2, '0');
+  }
+
+  countAll() {
+    return this.certificateRepository.count();
+  }
+
+  countAllRevoked() {
+    return this.certificateRepository.count({
+      where: {
+        is_revoked: true,
+      },
+    });
   }
 
   findAll() {

@@ -18,6 +18,11 @@ export class User {
   @Field({ description: "The user's email from the legacy database" })
   email: string;
 
+  @Field({
+    description: 'Boolean indicating if a user is an administrator or not.',
+  })
+  isAdmin: boolean;
+
   @Field((type) => [Certificate], {
     description: 'The certificates of the user',
   })
