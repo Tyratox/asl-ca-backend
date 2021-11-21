@@ -11,6 +11,7 @@ import {
   Int,
 } from '@nestjs/graphql';
 import { type } from 'os';
+import { GraphQLException } from 'src/exceptions/exception.model';
 import { GqlAdminGuard } from 'src/user/authentication/graphql-admin.guard';
 import {
   createNotFoundException,
@@ -29,7 +30,7 @@ const RevokeCertificateReponse = createUnionType({
   name: 'RevokeCertificateReponse',
   types: () => [RevokeCertificateSuccess, NotFoundException],
   resolveType: (value) => {
-    if (value instanceof Error) {
+    if (value instanceof GraphQLException) {
       return NotFoundException;
     } else {
       return RevokeCertificateSuccess;

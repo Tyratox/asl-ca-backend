@@ -25,6 +25,11 @@ export class LegacyUserService {
     lastname: string,
     email: string,
   ) {
+    //check if mail is valid
+    if (!/.*\@imovies.ch/.test(email)) {
+      throw new Error('Invalid email');
+    }
+
     user.firstname = firstname;
     user.lastname = lastname;
     user.email = email;

@@ -28,15 +28,32 @@ import {
 import { Session } from './session.model';
 import { CertificateService } from '../certificate/certificate.service';
 import { Certificate } from '../certificate/certificate.model';
+import {
+  createInvalidEmailException,
+  InvalidEmailException,
+} from 'src/exceptions/invalid-email.exception';
+import { GraphQLException } from 'src/exceptions/exception.model';
 
 const AuthenticationResult = createUnionType({
   name: 'AuthenticationResult',
   types: () => [Session, AuthenticationException],
   resolveType: (value) => {
-    if (value instanceof Error) {
+    if (value instanceof GraphQLException) {
       return AuthenticationException;
     } else {
       return Session;
+    }
+  },
+});
+
+const UpdateUserResult = createUnionType({
+  name: 'UpdateUserResult',
+  types: () => [User, InvalidEmailException],
+  resolveType: (value) => {
+    if (value instanceof GraphQLException) {
+      return InvalidEmailException;
+    } else {
+      return User;
     }
   },
 });
@@ -45,7 +62,7 @@ const UpdatePasswordResult = createUnionType({
   name: 'UpdatePasswordResult',
   types: () => [User, WrongPasswordException],
   resolveType: (value) => {
-    if (value instanceof Error) {
+    if (value instanceof GraphQLException) {
       return WrongPasswordException;
     } else {
       return User;
@@ -134,7 +151,7 @@ export class UsersResolver {
     }
   }
 
-  @Mutation((returns) => User, {
+  @Mutation((returns) => UpdateUserResult, {
     description: 'Updates the current user using the provided data',
   })
   @UseGuards(GqlAuthGuard)
@@ -144,14 +161,18 @@ export class UsersResolver {
     @Args({ name: 'email' }) email: string,
     @CurrentUser() user: LegacyUserEntity,
   ) {
-    const updatedUser = await this.legacyUserService.update(
-      user,
-      firstname,
-      lastname,
-      email,
-    );
+    try {
+      const updatedUser = await this.legacyUserService.update(
+        user,
+        firstname,
+        lastname,
+        email,
+      );
 
-    return updatedUser;
+      return updatedUser;
+    } catch (e) {
+      return createInvalidEmailException('The passed email is invalid');
+    }
   }
 
   @Mutation((returns) => UpdatePasswordResult, {

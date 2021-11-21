@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Exception } from './exception.model';
+import { Exception, GraphQLException } from './exception.model';
 
 @ObjectType({
   description: 'An exception that is raised during authentication',
@@ -7,4 +7,4 @@ import { Exception } from './exception.model';
 export class AuthenticationException extends Exception {}
 
 export const createAuthenticationException = (message: string) =>
-  new Error(message);
+  new GraphQLException(message);

@@ -74,10 +74,15 @@ export class CertificateService {
         user,
       });
 
-      console.log(Date() + " Generating certificate for user : " + user.uid + ", with certificate name : " + name);
+      console.log(
+        Date() +
+          ' Generating certificate for user : ' +
+          user.uid +
+          ', with certificate name : ' +
+          name,
+      );
 
       certificate = await this.certificateRepository.save(certificate);
-
       const certificateId = certificate.id.toString();
 
       const CA_PATH = this.configService.get<string>('CA_PATH');
@@ -90,34 +95,37 @@ export class CertificateService {
 
       // IMPORTANT: DON'T ENABLE THE SHELL OPTION, WE HAVE USER CONTROLLED INPUT
 
-      console.log(Date() + " Calling : " + CA_UTIL_PATH + " generate " + certificateId);
-      const keyFileInBase64 = execFileSync(
-        CA_UTIL_PATH,
-        ['generate', certificateId],
-        {
-          encoding: 'base64',
-          stdio: 'pipe',
-        },
+      console.log(
+        Date() + ' Calling : ' + CA_UTIL_PATH + ' generate ' + certificateId,
       );
-      console.log(Date() + " Calling : " + CA_UTIL_PATH + " request " + certificateId + " " + user.email);
-
-      execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email], {
-        stdio: 'pipe',
+      const keyFile = execFileSync(CA_UTIL_PATH, ['generate', certificateId], {
+        encoding: 'utf-8',
       });
-      console.log(Date() + " Calling : " + CA_UTIL_PATH + " sign " + certificateId);
-
-      const certFileInBase64 = execFileSync(
-        CA_UTIL_PATH,
-        ['sign', certificateId],
-        { encoding: 'base64', stdio: 'pipe' },
+      console.log(
+        Date() +
+          ' Calling : ' +
+          CA_UTIL_PATH +
+          ' request ' +
+          certificateId +
+          ' ' +
+          user.email,
       );
+
+      execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email], {});
+      console.log(
+        Date() + ' Calling : ' + CA_UTIL_PATH + ' sign ' + certificateId,
+      );
+
+      const certFile = execFileSync(CA_UTIL_PATH, ['sign', certificateId], {
+        encoding: 'utf-8',
+      });
       // write to tmp directory, we have it in memory anyway so it's probably okay
       // to write it to a directory for generating the p12 file
-      writeFileSync(TEMP_PATH_KEY, keyFileInBase64, {
-        encoding: 'base64',
+      writeFileSync(TEMP_PATH_KEY, keyFile, {
+        encoding: 'utf-8',
       });
-      writeFileSync(TEMP_PATH_CRT, certFileInBase64, {
-        encoding: 'base64',
+      writeFileSync(TEMP_PATH_CRT, certFile, {
+        encoding: 'utf-8',
       });
 
       execFileSync(
@@ -135,7 +143,7 @@ export class CertificateService {
           /* empty password */
           `pass:${password}`,
         ],
-        { stdio: 'pipe' },
+        {},
       );
       // read p12 file
       const p12 = readFileSync(TEMP_PATH_P12, { encoding: 'base64' });
@@ -169,8 +177,8 @@ export class CertificateService {
       const CA_UTIL_PATH = join(CA_PATH, 'ca-utility');
       const certificateId = certificate.id.toString();
 
-      execFileSync(CA_UTIL_PATH, ['revoke', certificateId], { stdio: 'pipe' });
-      execFileSync(CA_UTIL_PATH, ['update-crl'], { stdio: 'pipe' });
+      execFileSync(CA_UTIL_PATH, ['revoke', certificateId], {});
+      execFileSync(CA_UTIL_PATH, ['update-crl'], {});
 
       // if system calls succeeded, also store in database
       certificate.is_revoked = true;

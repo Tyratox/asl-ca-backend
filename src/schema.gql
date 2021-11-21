@@ -32,6 +32,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""An exception that is raised during authentication"""
+type InvalidEmailException {
+  """A message describing why the exception occured"""
+  message: String!
+}
+
 type Mutation {
   """Logs a user in and returns a new valid session id"""
   authenticate(password: String!, username: String!): AuthenticationResult!
@@ -46,7 +52,7 @@ type Mutation {
   revokeCertificate(id: ID!): RevokeCertificateReponse!
 
   """Updates the current user using the provided data"""
-  updateMe(email: String!, firstname: String!, lastname: String!): User!
+  updateMe(email: String!, firstname: String!, lastname: String!): UpdateUserResult!
 
   """Updates the current user's password"""
   updatePassword(newPassword: String!, oldPassword: String!): UpdatePasswordResult!
@@ -95,6 +101,8 @@ type Session {
 }
 
 union UpdatePasswordResult = User | WrongPasswordException
+
+union UpdateUserResult = InvalidEmailException | User
 
 """
 The user type contains all information about the user, including the data from the legacy database
