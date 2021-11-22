@@ -31,8 +31,8 @@ import { Certificate } from '../certificate/certificate.model';
 import {
   createInvalidEmailException,
   InvalidEmailException,
-} from 'src/exceptions/invalid-email.exception';
-import { GraphQLException } from 'src/exceptions/exception.model';
+} from '../exceptions/invalid-email.exception';
+import { GraphQLException } from '../exceptions/exception.model';
 
 const AuthenticationResult = createUnionType({
   name: 'AuthenticationResult',

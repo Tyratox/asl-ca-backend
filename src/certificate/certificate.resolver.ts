@@ -11,8 +11,8 @@ import {
   Int,
 } from '@nestjs/graphql';
 import { type } from 'os';
-import { GraphQLException } from 'src/exceptions/exception.model';
-import { GqlAdminGuard } from 'src/user/authentication/graphql-admin.guard';
+import { GraphQLException } from '../exceptions/exception.model';
+import { GqlAdminGuard } from '../user/authentication/graphql-admin.guard';
 import {
   createNotFoundException,
   NotFoundException,
@@ -20,7 +20,6 @@ import {
 import { CurrentUser } from '../user/authentication/current-user.decorator';
 import { GqlAuthGuard } from '../user/authentication/graphql-auth.guard';
 import { LegacyUserEntity } from '../user/legacy-user.entity';
-import { CertificateEntity } from './certificate.entity';
 import { Certificate } from './certificate.model';
 import { CertificateService } from './certificate.service';
 import { NewCertificate } from './new-certificate.model';

@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdministratorService } from 'src/user/administrator.service';
+import { AdministratorService } from '../user/administrator.service';
 import { LegacyUserService } from '../user/legacy-user.service';
 import { UsersModule } from '../user/users.module';
 import { CertificateEntity } from './certificate.entity';
