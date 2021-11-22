@@ -286,7 +286,7 @@ int main(int argc, char *argv[]){
           string command = "openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"";
 
           cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", email : " << commonName << endl;
-          execl(shPath.c_str(), "sh", "-c", command, NULL);
+          execl(shPath.c_str(), "sh", "-c", command.c_str(), NULL);
         
           return 0;
         } else{

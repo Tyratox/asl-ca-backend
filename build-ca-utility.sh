@@ -2,6 +2,7 @@
 
 MKDIR_PATH=$(which mkdir)
 OPENSSL_PATH=$(which openssl)
+SH_PATH=$(which sh)
 
 if [ -z "$1" ]
 then
@@ -33,4 +34,4 @@ then
   exit
 fi
 
-g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$OPENSSL_PATH" -DMKDIR_PATH="$MKDIR_PATH" -DUID="$5"
+g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$OPENSSL_PATH" -DMKDIR_PATH="$MKDIR_PATH" -DSH_PATH="$SH_PATH" -DUID="$5"
