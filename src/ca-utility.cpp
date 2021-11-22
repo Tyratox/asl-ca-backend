@@ -4,6 +4,7 @@
 #define CONFIG_PATH_STRING STR_VALUE(CONFIG_PATH)
 #define OPENSSL_PATH_STRING STR_VALUE(OPENSSL_PATH)
 #define MKDIR_PATH_STRING STR_VALUE(MKDIR_PATH)
+#define SH_PATH_STRING STR_VALUE(SH_PATH)
 
 #include <iostream>
 #include <iomanip>
@@ -31,6 +32,7 @@ string configPath = CONFIG_PATH_STRING;
 string caPath = CA_PATH_STRING;
 string opensslPath = OPENSSL_PATH_STRING;
 string mkdirPath = MKDIR_PATH_STRING;
+string shPath = SH_PATH_STRING;
 
 const std::string currentDateTime() {
     time_t     now = time(0);
@@ -281,9 +283,10 @@ int main(int argc, char *argv[]){
         regex e (".*@imovies\\.ch");
         if (regex_match(commonName,e)){
           string subject = "/C=CH/ST=Zurich/L=Zurich/O=iMovies/OU=IT/CN=" + commonName;
-          
-          system(("openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"").c_str());
+          string command = "openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"";
+
           cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", email : " << commonName << endl;
+          execl(shPath.c_str(), "sh", "-c", command, NULL);
         
           return 0;
         } else{
