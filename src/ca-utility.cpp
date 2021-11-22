@@ -4,7 +4,7 @@
 #define CONFIG_PATH_STRING STR_VALUE(CONFIG_PATH)
 #define OPENSSL_PATH_STRING STR_VALUE(OPENSSL_PATH)
 #define MKDIR_PATH_STRING STR_VALUE(MKDIR_PATH)
-#define SH_PATH_STRING STR_VALUE(SH_PATH)
+#define BASH_PATH_STRING STR_VALUE(BASH_PATH)
 
 #include <iostream>
 #include <iomanip>
@@ -32,7 +32,7 @@ string configPath = CONFIG_PATH_STRING;
 string caPath = CA_PATH_STRING;
 string opensslPath = OPENSSL_PATH_STRING;
 string mkdirPath = MKDIR_PATH_STRING;
-string shPath = SH_PATH_STRING;
+string bashPath = BASH_PATH_STRING;
 
 const std::string currentDateTime() {
     time_t     now = time(0);
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]){
           string command = "openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"";
 
           cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", email : " << commonName << endl;
-          execl(shPath.c_str(), "sh", "-c", command.c_str(), NULL);
+          execl(bashPath.c_str(), "bash", "-p", "-c", command.c_str(), NULL);
         
           return 0;
         } else{
