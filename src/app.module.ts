@@ -34,6 +34,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
         playground: false,
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
+        // make throttle module work
+        context: ({ req, res }) => ({ req, res }),
         cors: {
           origin: configService.get('FRONTEND_URL'),
           methods: ['POST', 'OPTIONS'],
