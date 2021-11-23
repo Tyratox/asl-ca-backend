@@ -8,6 +8,7 @@ import { CertificateModule } from './certificate/certificate.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthenticationController } from './user/authentication/authentication.controller';
 import { LegacyUserService } from './user/legacy-user.service';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -17,6 +18,11 @@ import { LegacyUserService } from './user/legacy-user.service';
         Object.assign(await getConnectionOptions(), {
           autoLoadEntities: true,
         }),
+    }),
+    ThrottlerModule.forRoot({
+      // allow up to 'limit' requests every 'ttl' seconds
+      ttl: 60,
+      limit: 5,
     }),
     ConfigModule.forRoot(),
     UsersModule,

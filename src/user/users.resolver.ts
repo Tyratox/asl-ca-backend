@@ -33,6 +33,7 @@ import {
   InvalidEmailException,
 } from '../exceptions/invalid-email.exception';
 import { GraphQLException } from '../exceptions/exception.model';
+import { ThrottlerBehindProxyGuard } from 'src/throttler-behind-proxy.guard';
 
 const AuthenticationResult = createUnionType({
   name: 'AuthenticationResult',
@@ -110,6 +111,7 @@ export class UsersResolver {
   @Mutation((returns) => AuthenticationResult, {
     description: 'Logs a user in and returns a new valid session id',
   })
+  @UseGuards(ThrottlerBehindProxyGuard)
   async authenticate(
     @Args({ name: 'username' }) username: string,
     @Args({ name: 'password' }) password: string,
