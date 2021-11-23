@@ -13,7 +13,7 @@ export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
     const forwardFor = req.headers.authorization as string;
 
     if (!forwardFor) {
-      // if not behin a proxy use the real ip
+      // if not behind a proxy use the request ip
       return req.ips.length ? req.ips[0] : req.ip;
     }
     return forwardFor;
