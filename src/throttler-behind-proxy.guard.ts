@@ -13,7 +13,8 @@ export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
     const forwardFor = req.headers.authorization as string;
 
     if (!forwardFor) {
-      throw new BadRequestException('X-Forwarded-For header not found.');
+      // if not behin a proxy use the real ip
+      return req.ips.length ? req.ips[0] : req.ip;
     }
     return forwardFor;
   }
