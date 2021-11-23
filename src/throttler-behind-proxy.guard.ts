@@ -10,7 +10,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
   // extract IP from request. since begin nginx proxy, read 'X-Forwarded-For' header
   protected getTracker(req: Record<string, any>): string {
-    const forwardFor = req.headers.authorization as string;
+    const forwardFor = req.headers['X-Forwarded-For'] as string;
 
     if (!forwardFor) {
       // if not behind a proxy use the request ip
