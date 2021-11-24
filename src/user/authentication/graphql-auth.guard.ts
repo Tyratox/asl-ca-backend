@@ -18,9 +18,9 @@ export class GqlAuthGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = this.getRequest(context);
+    const request = this.getRequest(context);
 
-    const authHeader = req.headers.authorization as string;
+    const authHeader = request.headers.authorization as string;
 
     if (!authHeader) {
       throw new BadRequestException('Authorization header not found.');
@@ -31,14 +31,22 @@ export class GqlAuthGuard implements CanActivate {
         `Authentication type \'Bearer\' required. Found \'${type}\'`,
       );
     }
-    const session = await this.authenticationService.validateToken(token);
+
+    const ip_address =
+      (request.headers['x-forwarded-for'] as string) ||
+      (request.ips.length ? request.ips[0] : request.ip);
+
+    const session = await this.authenticationService.validateToken(
+      token,
+      ip_address,
+    );
 
     if (!session) {
       throw new UnauthorizedException('Token not valid');
     }
 
-    req.user = session.user;
-    req.session_id = session.session_id;
+    request.user = session.user;
+    request.session_id = session.session_id;
 
     return true;
   }

@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'crypto';
+import { createHash, pbkdf2Sync, randomBytes } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { LegacyUserService } from '../../user/legacy-user.service';
 import { SessionEntity } from '../session.entity';
@@ -7,9 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LegacyUserEntity } from '../legacy-user.entity';
 
 //according to owasp at least 128 bits = 16 bytes, so double it twice
-const NUMBER_OF_RANDOM_BYTES = 64;
+const SESSION_RANDOM_BYTES = 64;
+const SESSION_LENGTH = Math.ceil((SESSION_RANDOM_BYTES * 8) / 6);
 //milliseconds
 const SESSION_TTL = 1000 * 60 * 30; // 30m
+
+const HASH_ITERATIONS = 10000;
+const HASH_SALT_BYTES = 64;
+const HASH_BYTES = 64;
+const HASH_DIGEST = 'sha512';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,11 +25,40 @@ export class AuthenticationService {
     private sessionRepository: Repository<SessionEntity>,
   ) {}
 
+  hash(value: string, salt: string) {
+    return pbkdf2Sync(
+      value,
+      salt,
+      HASH_ITERATIONS,
+      HASH_BYTES,
+      HASH_DIGEST,
+    ).toString('base64');
+  }
+
+  computeSaltedHash(value: string) {
+    const salt = randomBytes(HASH_SALT_BYTES).toString('base64');
+    const hash = this.hash(value, salt);
+
+    //salt: 64 bytes => 512 bits => 86 characters
+    //hash: 64 bytes => 512 bits => 86 characters
+    return `${salt}:${hash}`;
+  }
+
+  verifySaltedHash(value: string, salted_hash: string) {
+    const [salt, hash] = salted_hash.split(':');
+
+    return this.hash(value, salt) == hash;
+  }
+
   validatePassword(user: LegacyUserEntity, password: string) {
     return user.pwd === createHash('sha1').update(password).digest('hex');
   }
 
-  async authenticateUser(username: string, password: string) {
+  async authenticateUser(
+    username: string,
+    password: string,
+    ip_address: string,
+  ) {
     const user = await this.userService.findOneByUsername(username);
     if (
       user &&
@@ -34,13 +69,13 @@ export class AuthenticationService {
       await this.removeOldSessions();
 
       //create new session
-      return await this.generateSessionForUser(user);
+      return await this.generateSessionForUser(user, ip_address);
     }
     return false;
   }
 
-  async validateToken(token: string) {
-    const session = await this.findSessionBySessionId(token);
+  async validateToken(token: string, ip_address: string) {
+    const session = await this.findSession(token, ip_address);
     if (!session) {
       return false;
     }
@@ -52,11 +87,13 @@ export class AuthenticationService {
     return this.sessionRepository.find();
   }
 
-  async findSessionBySessionId(session_id: string) {
+  async findSession(session_id: string, ip_address: string) {
     const session = await this.sessionRepository.findOne({
-      where: { session_id },
+      /* pad session_id s.t. timing attacks are not possible */
+      where: { session_id: session_id.padEnd(SESSION_LENGTH, '0') },
     });
-    if (!session) {
+
+    if (!session || !this.verifySaltedHash(ip_address, session.ip_address)) {
       return null;
     }
 
@@ -69,15 +106,20 @@ export class AuthenticationService {
     return session;
   }
 
-  async generateSessionForUser(user: LegacyUserEntity) {
-    let session_id = randomBytes(NUMBER_OF_RANDOM_BYTES).toString('base64');
-    while (await this.findSessionBySessionId(session_id)) {
+  async generateSessionForUser(user: LegacyUserEntity, ip_address: string) {
+    let session_id = randomBytes(SESSION_RANDOM_BYTES).toString('base64');
+
+    while (await this.findSession(session_id, ip_address)) {
       //as long as there already is one with the same session id
       //generate a new one!
-      session_id = randomBytes(NUMBER_OF_RANDOM_BYTES).toString('base64');
+      session_id = randomBytes(SESSION_RANDOM_BYTES).toString('base64');
     }
 
-    const entity = this.sessionRepository.create({ session_id, user });
+    const entity = this.sessionRepository.create({
+      session_id: session_id.padEnd(SESSION_LENGTH, '0'),
+      user,
+      ip_address: this.computeSaltedHash(ip_address),
+    });
     await this.sessionRepository.save(entity);
 
     return entity;

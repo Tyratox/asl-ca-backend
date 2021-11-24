@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Req, UseGuards } from '@nestjs/common';
 import {
   Args,
   createUnionType,
@@ -34,6 +34,8 @@ import {
 } from '../exceptions/invalid-email.exception';
 import { GraphQLException } from '../exceptions/exception.model';
 import { ThrottlerBehindProxyGuard } from 'src/throttler-behind-proxy.guard';
+import { Request } from 'express';
+import { GraphQLRequest } from './graphql-request.decorator';
 
 const AuthenticationResult = createUnionType({
   name: 'AuthenticationResult',
@@ -115,6 +117,7 @@ export class UsersResolver {
   async authenticate(
     @Args({ name: 'username' }) username: string,
     @Args({ name: 'password' }) password: string,
+    @GraphQLRequest() request: Request,
   ) {
     const isAdmin = await this.administratorService.isAdmin(username);
 
@@ -123,9 +126,16 @@ export class UsersResolver {
         'The provided username and password combination does not exist',
       );
     }
+
+    // obtain IP
+    const ip_address =
+      (request.headers['x-forwarded-for'] as string) ||
+      (request.ips.length ? request.ips[0] : request.ip);
+
     const session = await this.authenticationService.authenticateUser(
       username,
       password,
+      ip_address,
     );
     if (session) {
       return session;

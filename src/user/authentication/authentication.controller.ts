@@ -39,8 +39,13 @@ export class AuthenticationController {
       return 'Error: Something went very wrong.. Please report this!';
     }
 
+    const ip_address =
+      (request.headers['x-forwarded-for'] as string) ||
+      (request.ips.length ? request.ips[0] : request.ip);
+
     const session = await this.authenticationService.generateSessionForUser(
       user,
+      ip_address,
     );
 
     const FRONTEND_URL = this.configService.get('FRONTEND_URL');
