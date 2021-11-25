@@ -33,7 +33,7 @@ import {
   InvalidEmailException,
 } from '../exceptions/invalid-email.exception';
 import { GraphQLException } from '../exceptions/exception.model';
-import { ThrottlerBehindProxyGuard } from 'src/throttler-behind-proxy.guard';
+import { ThrottlerBehindProxyGuard } from '../throttler-behind-proxy.guard';
 import { Request } from 'express';
 import { GraphQLRequest } from './graphql-request.decorator';
 
