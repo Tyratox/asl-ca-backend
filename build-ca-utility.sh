@@ -3,6 +3,7 @@
 MKDIR_PATH=$(which mkdir)
 OPENSSL_PATH=$(which openssl)
 BASH_PATH=$(which bash)
+CHMOD_PATH=$(which chmod)
 
 if [ -z "$1" ]
 then
@@ -34,4 +35,4 @@ then
   exit
 fi
 
-g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$OPENSSL_PATH" -DMKDIR_PATH="$MKDIR_PATH" -DBASH_PATH="$BASH_PATH" -DUID="$5"
+g++ -std=c++17 -O3 -Wall "$1" -o "$2" -DCA_PATH="$3" -DCONFIG_PATH="$4" -DOPENSSL_PATH="$OPENSSL_PATH" -DMKDIR_PATH="$MKDIR_PATH" -DBASH_PATH="$BASH_PATH" -DCHMOD_PATH="$CHMOD_PATH" -DUID="$5"

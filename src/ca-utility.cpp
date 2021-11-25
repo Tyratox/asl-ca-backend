@@ -5,6 +5,7 @@
 #define OPENSSL_PATH_STRING STR_VALUE(OPENSSL_PATH)
 #define MKDIR_PATH_STRING STR_VALUE(MKDIR_PATH)
 #define BASH_PATH_STRING STR_VALUE(BASH_PATH)
+#define CHMOD_PATH_STRING STR_VALUE(CHMOD_PATH)
 
 #include <iostream>
 #include <iomanip>
@@ -33,6 +34,7 @@ string caPath = CA_PATH_STRING;
 string opensslPath = OPENSSL_PATH_STRING;
 string mkdirPath = MKDIR_PATH_STRING;
 string bashPath = BASH_PATH_STRING;
+string chmodPath = CHMOD_PATH_STRING;
 
 const std::string currentDateTime() {
     time_t     now = time(0);
@@ -238,9 +240,21 @@ int main(int argc, char *argv[]){
             cout << outputString << endl;
             return 0;
         } else {
-            // child process
-            execl(opensslPath.c_str(), "openssl", "genrsa", "-out", output.c_str(), "4096", NULL);
-            return 0;
+            pid_t c_pid = fork();
+
+            if (c_pid == -1) {
+                return 100;
+            } else if (c_pid > 0) {
+                // parent process
+                // wait for child  to terminate
+                wait(nullptr);
+                execl(chmodPath.c_str(), "chmod", "640", output.c_str(), NULL);
+                return 0;
+            } else {
+                // child process
+                execl(opensslPath.c_str(), "openssl", "genrsa", "-out", output.c_str(), "8192", NULL);
+                return 0;
+            }
         }
 
       } else if(command == "request"){
