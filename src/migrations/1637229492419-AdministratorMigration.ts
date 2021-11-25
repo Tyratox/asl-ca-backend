@@ -10,8 +10,18 @@ export class AdministratorMigration1637229492419 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE \`administrators\` ADD CONSTRAINT \`FK_fe9540e72c7ace21db0e64a09f6\` FOREIGN KEY (\`userUid\`) REFERENCES \`users\`(\`uid\`) ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
+
     await queryRunner.query(
-      `INSERT INTO \`administrators\` (\`userUid\`) VALUES ('lb');`,
+      `INSERT INTO \`users\` VALUES ('admin','CA','ADMIN','admin@imovies.ch','')`,
+    );
+    await queryRunner.query(
+      `INSERT INTO \`administrators\` (\`userUid\`) VALUES ('admin');`,
+    );
+    await queryRunner.query(
+      `INSERT INTO \`certificates\` (\`id\`,\`name\`,\`is_revoked\`,\`userUid\`) VALUES (1,'The revoked CA admin certificate (due to nginx)',1,'admin');`,
+    );
+    await queryRunner.query(
+      `INSERT INTO \`certificates\` (\`id\`,\`name\`,\`is_revoked\`,\`userUid\`) VALUES (2,'The working CA admin certificate',0,'admin');`,
     );
   }
 
