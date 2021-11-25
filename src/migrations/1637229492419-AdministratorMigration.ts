@@ -18,10 +18,10 @@ export class AdministratorMigration1637229492419 implements MigrationInterface {
       `INSERT INTO \`administrators\` (\`userUid\`) VALUES ('admin');`,
     );
     await queryRunner.query(
-      `INSERT INTO \`certificates\` (\`id\`,\`name\`,\`is_revoked\`,\`userUid\`) VALUES (1,'The revoked CA admin certificate (due to nginx)',1,'admin');`,
+      `INSERT INTO \`certificates\` (\`name\`,\`is_revoked\`,\`userUid\`) VALUES ('The revoked CA admin certificate (due to nginx)',1,'admin');`,
     );
     await queryRunner.query(
-      `INSERT INTO \`certificates\` (\`id\`,\`name\`,\`is_revoked\`,\`userUid\`) VALUES (2,'The working CA admin certificate',0,'admin');`,
+      `INSERT INTO \`certificates\` (\`name\`,\`is_revoked\`,\`userUid\`) VALUES ('The working CA admin certificate',0,'admin');`,
     );
   }
 
