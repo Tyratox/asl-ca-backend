@@ -24,6 +24,7 @@ import { Certificate } from './certificate.model';
 import { CertificateService } from './certificate.service';
 import { NewCertificate } from './new-certificate.model';
 import { RevokeCertificateSuccess } from './RevokeCertificateSucess.model';
+import { ThrottlerBehindProxyGuard } from 'src/throttler-behind-proxy.guard';
 
 const RevokeCertificateReponse = createUnionType({
   name: 'RevokeCertificateReponse',
@@ -80,7 +81,7 @@ export class CertificateResolver {
   @Mutation((returns) => NewCertificate, {
     description: 'Generates a new certificate',
   })
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, ThrottlerBehindProxyGuard)
   async generateCertificate(
     @Args({ name: 'name' }) name: string,
     @Args({ name: 'password' }) password: string,
@@ -105,7 +106,7 @@ export class CertificateResolver {
       parseInt(id),
       user,
     );
-    if (certificate) {
+    if (certificate && !certificate.is_revoked) {
       await this.certificateService.revokeCertificate(certificate);
       return { success: true };
     } else {

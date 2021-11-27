@@ -252,7 +252,7 @@ int main(int argc, char *argv[]){
                 return 0;
             } else {
                 // child process
-                execl(opensslPath.c_str(), "openssl", "genrsa", "-out", output.c_str(), "8192", NULL);
+                execl(opensslPath.c_str(), "openssl", "genrsa", "-out", output.c_str(), "4096", NULL);
                 return 0;
             }
         }
