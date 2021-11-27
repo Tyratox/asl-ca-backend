@@ -24,7 +24,7 @@ import { Certificate } from './certificate.model';
 import { CertificateService } from './certificate.service';
 import { NewCertificate } from './new-certificate.model';
 import { RevokeCertificateSuccess } from './RevokeCertificateSucess.model';
-import { ThrottlerBehindProxyGuard } from 'src/throttler-behind-proxy.guard';
+import { ThrottlerBehindProxyGuard } from '../throttler-behind-proxy.guard';
 
 const RevokeCertificateReponse = createUnionType({
   name: 'RevokeCertificateReponse',
