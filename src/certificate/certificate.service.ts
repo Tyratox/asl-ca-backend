@@ -107,11 +107,15 @@ export class CertificateService {
           CA_UTIL_PATH +
           ' request ' +
           certificateId +
-          ' ' +
-          user.email,
+          ' email' +
+          user.uid,
       );
 
-      execFileSync(CA_UTIL_PATH, ['request', certificateId, user.email], {});
+      execFileSync(
+        CA_UTIL_PATH,
+        ['request', certificateId, user.email, user.uid],
+        {},
+      );
       console.log(
         Date() + ' Calling : ' + CA_UTIL_PATH + ' sign ' + certificateId,
       );

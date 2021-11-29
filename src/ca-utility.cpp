@@ -286,12 +286,13 @@ int main(int argc, char *argv[]){
         }
 
         //-subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com
-        if(argc <= 3){
+        if(argc <= 4){
           cerr << currentDateTime() << " Error : For creating a Certificate request, a common name has to be passed!" << endl;
           return 11;
         }
 
         string commonName = argv[3];
+        string uid = argv[4];
 
         // sanitize input
         regex e (".*@imovies\\.ch");
@@ -299,7 +300,7 @@ int main(int argc, char *argv[]){
           string subject = "/C=CH/ST=Zurich/L=Zurich/O=iMovies/OU=IT/CN=" + commonName;
           string command = "openssl req -new -key \"" + input + "\" -out \"" + output + "\" -subj \"" + subject + "\"";
 
-          cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", email : " << commonName << endl;
+          cerr << currentDateTime() << " : Certificate requested --- " << " key : " << target << ", uid : " << uid << endl;
           execl(bashPath.c_str(), "bash", "-p", "-c", command.c_str(), NULL);
         
           return 0;
