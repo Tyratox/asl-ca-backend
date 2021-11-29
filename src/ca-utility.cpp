@@ -248,7 +248,7 @@ int main(int argc, char *argv[]){
                 // parent process
                 // wait for child  to terminate
                 wait(nullptr);
-                execl(chmodPath.c_str(), "chmod", "640", output.c_str(), NULL);
+                execl(chmodPath.c_str(), "chmod", "660", output.c_str(), NULL);
                 return 0;
             } else {
                 // child process
