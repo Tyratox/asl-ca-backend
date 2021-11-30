@@ -132,8 +132,9 @@ int main(int argc, char *argv[]){
   string caCrlFile = caPath + "crl/crl.pem";
   string caRevokedFile = caPath + "crl/revoked.pem";
 
-  string caPathUserKeysPrivate = caPath + "private";
+  string caPathPrivate = caPath + "private";
   string caPathUserKeys = caPath + "private/users/";
+  string caPathNewUserKeys = caPath + "private/newkeys/";
   string caPathRequests = caPath + "requests/";
   string caPathCertificates = caPath + "newcerts/";
   // certs/ doesn't seem to be used so
@@ -141,7 +142,8 @@ int main(int argc, char *argv[]){
   string caPathCRL = caPath + "crl/";
 
   // safe since no user input is used
-  mkdir(caPathUserKeysPrivate.c_str());
+  mkdir(caPathNewUserKeys.c_str());
+  mkdir(caPathPrivate.c_str());
   mkdir(caPathUserKeys.c_str());
   mkdir(caPathRequests.c_str());
   //mkdir(caPathNewCertificates.c_str());
@@ -219,7 +221,7 @@ int main(int argc, char *argv[]){
           return 5;
         }
 
-        string output = caPathUserKeys + to_string(target) + ".key";
+        string output = caPathNewUserKeys + to_string(target) + ".key";
         fs::path p{ output };
         if (fs::exists(p)){
           cerr << currentDateTime() << "Error : File at path '" << output << "' already exists!" << endl;
@@ -278,7 +280,7 @@ int main(int argc, char *argv[]){
           return 9;
         }
 
-        string input = caPathUserKeys + to_string(target) + ".key";
+        string input = caPathNewUserKeys + to_string(target) + ".key";
         fs::path p2{ input };
         if (!fs::exists(p2)){
           cerr << currentDateTime() << " Error : File at path '" << input << "' does not exists!" << endl;
@@ -349,6 +351,12 @@ int main(int argc, char *argv[]){
             string outputString = readFile(output);
             cerr << currentDateTime() << " : Certificate signed --- " << " key : " << target << endl;
             cout << outputString << endl;
+
+            //the key can now be backed up & deleted, move to caPathUserKeys
+            string k1 = caPathNewUserKeys + to_string(target) + ".key";
+            string k2 = caPathUserKeys + to_string(target) + ".key";
+
+            filesystem::rename(k1, k2);
             return 0;
         } else {
             // child process
