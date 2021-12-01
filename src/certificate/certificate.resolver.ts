@@ -88,7 +88,7 @@ export class CertificateResolver {
     @CurrentUser() user: LegacyUserEntity,
   ) {
     try {
-      return this.certificateService.generateCertificateForUser(
+      return await this.certificateService.generateCertificateForUser(
         user,
         name,
         password,
