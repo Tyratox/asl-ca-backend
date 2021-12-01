@@ -87,11 +87,17 @@ export class CertificateResolver {
     @Args({ name: 'password' }) password: string,
     @CurrentUser() user: LegacyUserEntity,
   ) {
-    return this.certificateService.generateCertificateForUser(
-      user,
-      name,
-      password,
-    );
+    try {
+      return this.certificateService.generateCertificateForUser(
+        user,
+        name,
+        password,
+      );
+    } catch (e) {
+      throw new Error(
+        'Error during certificate generation, please contact the support. (If you tried to find an exploit you now have to reset the CA machine, sorry.)',
+      );
+    }
   }
 
   @Mutation((returns) => RevokeCertificateReponse, {
